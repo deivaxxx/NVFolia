@@ -24,3 +24,5 @@ Planned supported versions 1.21.5 - 1.21.7
 
 ## The core was specially created for the server 
 play.necovanilla.ru
+
+### What does the NVFolia multithreaded core do, each dimension has its own thread and chunk too. Now if a player is located and loads 16 chunks, then his TPS will be the same as in these 16 chunks. Other players who load their chunks will have their own TPS
