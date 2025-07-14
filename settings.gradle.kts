@@ -16,17 +16,13 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The Canvas project directory is not a properly cloned Git repository.
+         The NVfolia project directory is not a properly cloned Git repository.
          
          In order to build Canvas from source you must clone
          the Canvas repository using Git, not download a code
-         zip from GitHub.
-         
-         Built Canvas jars are available for download at
-         https://canvasmc.io/downloads
-         
-         See https://github.com/CraftCanvasMC/Canvas/blob/HEAD/CONTRIBUTING.md
-         for further information on building and modifying Canvas.
+         zip from GitHub.  
+         See https://github.com/deivaxxx/NVFolia
+         for further information on building and modifying NVfolia.
         ===================================================
     """.trimIndent()
     error(errorText)
