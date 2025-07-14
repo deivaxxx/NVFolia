@@ -5,7 +5,7 @@ import io.papermc.paperweight.tasks.RebuildBaseGitPatches
 
 plugins {
     java
-    id("io.canvasmc.weaver.patcher") version "2.1.3-SNAPSHOT"
+    id("io.nvfolia.weaver.patcher") version "1.1.1-SNAPSHOT"
 }
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
@@ -17,23 +17,23 @@ paperweight {
 
         patchFile {
             path = "folia-server/build.gradle.kts"
-            outputFile = file("canvas-server/build.gradle.kts")
-            patchFile = file("canvas-server/build.gradle.kts.patch")
+            outputFile = file("nvfolia-server/build.gradle.kts")
+            patchFile = file("nvfolia-server/build.gradle.kts.patch")
         }
         patchFile {
             path = "folia-api/build.gradle.kts"
-            outputFile = file("canvas-api/build.gradle.kts")
-            patchFile = file("canvas-api/build.gradle.kts.patch")
+            outputFile = file("nvfolia-api/build.gradle.kts")
+            patchFile = file("nvfolia-api/build.gradle.kts.patch")
         }
         patchRepo("paperApi") {
             upstreamPath = "paper-api"
-            patchesDir = file("canvas-api/paper-patches")
+            patchesDir = file("nvfolia-api/paper-patches")
             outputDir = file("paper-api")
         }
         patchDir("foliaApi") {
             upstreamPath = "folia-api"
             excludes = listOf("build.gradle.kts", "build.gradle.kts.patch", "paper-patches")
-            patchesDir = file("canvas-api/folia-patches")
+            patchesDir = file("nvfolia-api/folia-patches")
             outputDir = file("folia-api")
         }
     }
@@ -79,7 +79,7 @@ subprojects {
     }
 }
 
-project(":canvas-api") {
+project(":nvfolia-api") {
     extensions.configure<PublishingExtension> {
         repositories {
             maven("https://central.sonatype.com/repository/maven-snapshots/") {
@@ -97,27 +97,27 @@ project(":canvas-api") {
 
                 afterEvaluate {
                     pom {
-                        name.set("canvas-api")
+                        name.set("nvfolia-api")
                         description.set(this.description)
-                        url.set("https://github.com/CraftCanvasMC/Canvas")
+                        url.set("https://github.com/Craftnvfolia/nvfolia")
                         licenses {
                             license {
                                 name.set("GNU Affero General Public License v3.0")
-                                url.set("https://github.com/CraftCanvasMC/Canvas/blob/HEAD/LICENSE")
+                                url.set("https://github.com/Craftnvfolia/nvfolia/blob/HEAD/LICENSE")
                                 distribution.set("repo")
                             }
                         }
                         developers {
                             developer {
-                                id.set("canvas-team")
-                                name.set("Canvas Team")
-                                organization.set("CanvasMC")
-                                organizationUrl.set("https://canvasmc.io")
+                                id.set("nvfolia-team")
+                                name.set("nvfolia Team")
+                                organization.set("nvfolia")
+                                organizationUrl.set("https://papermc.io")
                                 roles.add("developer")
                             }
                         }
                         scm {
-                            url.set("https://github.com/CraftCanvasMC/Canvas")
+                            url.set("https://github.com/Craftnvfolia/nvfolia")
                         }
                     }
                 }
@@ -128,7 +128,7 @@ project(":canvas-api") {
 
 // build publication
 tasks.register<Jar>("createMojmapClipboardJar") {
-    dependsOn(":canvas-server:createMojmapPaperclipJar")
+    dependsOn(":nvfolia-server:createMojmapPaperclipJar")
 }
 
 tasks.register("buildPublisherJar") {
@@ -137,16 +137,16 @@ tasks.register("buildPublisherJar") {
     doLast {
         val buildNumber = System.getenv("BUILD_NUMBER") ?: "local"
 
-        val paperclipJarTask = project(":canvas-server").tasks.getByName("createMojmapPaperclipJar")
+        val paperclipJarTask = project(":nvfolia-server").tasks.getByName("createMojmapPaperclipJar")
         val outputJar = paperclipJarTask.outputs.files.singleFile
         val outputDir = outputJar.parentFile
 
         if (outputJar.exists()) {
-            val newJarName = "canvas-build.$buildNumber.jar"
+            val newJarName = "nvfolia-build.$buildNumber.jar"
             val newJarFile = File(outputDir, newJarName)
 
             outputDir.listFiles()
-                ?.filter { it.name.startsWith("canvas-build.") && it.name.endsWith(".jar") }
+                ?.filter { it.name.startsWith("nvfolia-build.") && it.name.endsWith(".jar") }
                 ?.forEach { it.delete() }
             outputJar.renameTo(newJarFile)
             println("Renamed ${outputJar.name} to $newJarName in ${outputDir.absolutePath}")
@@ -156,7 +156,7 @@ tasks.register("buildPublisherJar") {
 
 // patching scripts
 tasks.register("fixupMinecraftFilePatches") {
-    dependsOn(":canvas-server:fixupMinecraftSourcePatches")
+    dependsOn(":nvfolia-server:fixupMinecraftSourcePatches")
 }
 
 allprojects {
