@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.canvasServer)
-    implementation(projects.canvasApi)
+    implementation(projects.foliaServer)
+    implementation(projects.pufferfishApi)
 }
 
 tasks.register<Copy>("buildAndCopyPlugin") {
