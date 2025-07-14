@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kevin Raneri <kevin.raneri@gmail.com>
+Date: Tue, 9 Nov 2021 14:21:50 -0500
+Subject: [PATCH] Add option to disable books
+
+Books are commonly the target of duping-related exploits. If you
+anticipate that your server will be an early target of duping attacks in
+the event that new exploits are found, you may want to consider removing
+the ability for non-privileged players to edit books. This patch allows
+you to easily disable books, should you want to preemptively remove this
+functionality before additional exploits are found.
+
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index c61e8b5202a6ac6fcca8d1d7cbe8addecd42778e..a4ef0e209c2a0e0d23e94498cae727a815e0b20d 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1269,6 +1269,7 @@ public class ServerGamePacketListenerImpl
+ 
+     @Override
+     public void handleEditBook(ServerboundEditBookPacket packet) {
++        if (!gg.pufferfish.pufferfish.PufferfishConfig.enableBooks && !this.player.getBukkitEntity().hasPermission("pufferfish.usebooks")) return; // Pufferfish
+         // Paper start - Book size limits
+         final io.papermc.paper.configuration.type.number.IntOr.Disabled pageMax = io.papermc.paper.configuration.GlobalConfiguration.get().itemValidation.bookSize.pageMax;
+         if (!this.cserver.isPrimaryThread() && pageMax.enabled()) {
