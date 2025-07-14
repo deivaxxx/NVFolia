@@ -6,3 +6,4 @@ Please! The NVFolia is in effective development, and when using it, save a backu
 
 Most plugins have a multithreaded Folia compatibility setting, I'm building an API that runs entirely on Paper/Spigot but adds all of Folia's functionality
 # The core is in Alpha Testing!
+Planned supported versions 1.21.5 - 1.21.7
