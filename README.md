@@ -21,3 +21,6 @@ Planned supported versions 1.21.5 - 1.21.7
 ```LeafMC``` - Used to spawn mobs asynchronously and speed up single-threaded minecraft connection
 
 ```Folia``` - The main core used for NVFolia branding
+
+## The core was specially created for the server 
+play.necovanilla.ru
