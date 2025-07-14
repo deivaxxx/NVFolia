@@ -7,3 +7,17 @@ Please! The NVFolia is in effective development, and when using it, save a backu
 Most plugins have a multithreaded Folia compatibility setting, I'm building an API that runs entirely on Paper/Spigot but adds all of Folia's functionality
 # The core is in Alpha Testing!
 Planned supported versions 1.21.5 - 1.21.7
+
+
+### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
+```CanvasMc``` - A redesigned system that powers Folia
+
+```Pufferfish```-Adding DAB system and optimizing asynchronous chunk appearance
+
+```Paper``` - The integral structure of the nucleus
+
+```PurPur``` - For more detailed server settings
+
+```LeafMC``` - Used to spawn mobs asynchronously and speed up single-threaded minecraft connection
+
+```Folia``` - The main core used for NVFolia branding
