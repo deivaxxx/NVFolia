@@ -1,4 +1,4 @@
-package io.canvasmc.testplugin;
+package io.nvfolia.testplugin;
 
 import com.destroystokyo.paper.event.player.PlayerTeleportEndGatewayEvent;
 import net.minecraft.util.RandomSource;
@@ -18,7 +18,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("Enabling test plugin for Canvas");
+        getLogger().info("Enabling test plugin for NVFolia");
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getCommandMap().register("rtp", new BukkitCommand("rtp") {
             @Override
@@ -46,7 +46,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("Disabling test plugin for Canvas");
+        getLogger().info("Disabling test plugin for NVFolia");
     }
 
     @EventHandler
