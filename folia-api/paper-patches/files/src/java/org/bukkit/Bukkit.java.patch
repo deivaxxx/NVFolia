@@ -1,0 +1,21 @@
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -3035,6 +_,18 @@
+     public static double @Nullable [] getRegionTPS(@NotNull World world, int chunkX, int chunkZ) {
+         return server.getRegionTPS(world, chunkX, chunkZ);
+     }
++    // Canvas start - expand region api
++
++    /**
++     * Returns the region on the current thraed, or null if we are on the global tick thread
++     * <br>
++     * This will throw if not on a tick runner
++     * @return the current region
++     */
++    public static @Nullable io.canvasmc.canvas.threadedregions.WorldRegionData getCurrentRegion() {
++        return server.getCurrentRegion();
++    }
++    // Canvas end
+     // Folia end - region TPS API
+ 
+     /**
