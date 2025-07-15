@@ -1,0 +1,15 @@
+--- a/src/main/java/org/bukkit/World.java
++++ b/src/main/java/org/bukkit/World.java
+@@ -4462,4 +_,12 @@
+             }
+         }
+     }
++    // Canvas start - expand region API
++
++    /**
++     * Returns a mirror into the Folia regionizer for this world
++     * @return the regionizer
++     */
++    io.canvasmc.canvas.threadedregions.ServerRegionizer getRegionizer();
++    // Canvas end
+ }
