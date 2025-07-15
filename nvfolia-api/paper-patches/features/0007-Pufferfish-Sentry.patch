@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Fri, 21 Mar 2025 01:03:40 +0300
+Subject: [PATCH] Pufferfish: Sentry
+
+
+diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+index 9cb0f09b821a4020d17771a5b64ddd53e7d78478..1638548b766460be65c0c008f7f19df1386d2126 100644
+--- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
++++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+@@ -597,7 +597,9 @@ public final class SimplePluginManager implements PluginManager {
+ 
+     // Paper start
+     private void handlePluginException(String msg, Throwable ex, Plugin plugin) {
++        gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin); // DivineMC - Pufferfish: Sentry
+         server.getLogger().log(Level.SEVERE, msg, ex);
++        gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext(); // DivineMC - Pufferfish: Sentry
+         callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerPluginEnableDisableException(msg, ex, plugin)));
+     }
+     // Paper end
+@@ -667,9 +669,11 @@ public final class SimplePluginManager implements PluginManager {
+                             ));
+                 }
+             } catch (Throwable ex) {
++                gg.pufferfish.pufferfish.sentry.SentryContext.setEventContext(event, registration); // DivineMC - Pufferfish: Sentry
+                 // Paper start - error reporting
+                 String msg = "Could not pass event " + event.getEventName() + " to " + registration.getPlugin().getDescription().getFullName();
+                 server.getLogger().log(Level.SEVERE, msg, ex);
++                gg.pufferfish.pufferfish.sentry.SentryContext.removeEventContext(); // DivineMC - Pufferfish: Sentry
+                 if (!(event instanceof com.destroystokyo.paper.event.server.ServerExceptionEvent)) { // We don't want to cause an endless event loop
+                     callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerEventException(msg, ex, registration.getPlugin(), registration.getListener(), event)));
+                 }
+diff --git a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
+index 1ad24e0107499e4dcaad647feeb54887675d9e51..9342ea35fb963379039ae020f9317bb02147f9c1 100644
+--- a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
++++ b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
+@@ -330,7 +330,13 @@ public final class JavaPluginLoader implements PluginLoader {
+             try {
+                 jPlugin.setEnabled(true);
+             } catch (Throwable ex) {
++                // DivineMC start - Pufferfish: Sentry
++                gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin);
+                 server.getLogger().log(Level.SEVERE, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
++                gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext();
++                this.server.getPluginManager().disablePlugin(jPlugin);
++                return;
++                // DivineMC end - Pufferfish: Sentry
+             }
+ 
+             // Perhaps abort here, rather than continue going, but as it stands,
+@@ -355,7 +361,9 @@ public final class JavaPluginLoader implements PluginLoader {
+             try {
+                 jPlugin.setEnabled(false);
+             } catch (Throwable ex) {
++                gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin); // DivineMC - Pufferfish: Sentry
+                 server.getLogger().log(Level.SEVERE, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
++                gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext(); // DivineMC - Pufferfish: Sentry
+             }
+ 
+             if (cloader instanceof PluginClassLoader) {

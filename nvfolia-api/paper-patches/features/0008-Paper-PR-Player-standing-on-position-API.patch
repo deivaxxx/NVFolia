@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Sun, 23 Mar 2025 16:52:42 +0300
+Subject: [PATCH] Paper PR: Player standing on position API
+
+
+diff --git a/src/main/java/org/bukkit/entity/Entity.java b/src/main/java/org/bukkit/entity/Entity.java
+index 116428b3482871c4f26c7244bb8b5a0dd846192e..817f3891bb057791117145f26ab63a186ad6689d 100644
+--- a/src/main/java/org/bukkit/entity/Entity.java
++++ b/src/main/java/org/bukkit/entity/Entity.java
+@@ -1262,6 +1262,33 @@ public interface Entity extends Metadatable, CommandSender, Nameable, Persistent
+     void broadcastHurtAnimation(@NotNull java.util.Collection<Player> players);
+     // Paper end - broadcast hurt animation
+ 
++    // Paper start - Player standing on position API
++    /**
++     * Gets the block that is currently being used to calculate movement effects (i.e. friction) on the entity.
++     * <p>
++     * Examples:
++     * - When standing on a slab under an ice block, this will return the position of the ice block.
++     * - When flying on top of a flower placed on a grass block, this will return the position of the grass block (although this technically will not affect your movement).
++     *
++     * @return block used for movement effects
++     */
++    @NotNull
++    org.bukkit.block.Block getMovementAffectingBlock();
++
++    /**
++     * Gets the block that is currently supporting the entity.
++     * This takes into account the collisions of blocks under the entity.
++     * <p>
++     * Examples:
++     * - When standing on a slab under an ice block, this will return the position of the slab.
++     * - When flying on top of a flower placed on a grass block, this will return null, as no block is supporting the entity.
++     *
++     * @return block currently supporting the entity, or null if no block is currently supporting the entity
++     */
++    @Nullable
++    org.bukkit.block.Block getSupportingBlock();
++    // Paper end - Player standing on position API
++
+     // Purpur start - Ridables
+     /**
+      * Get the riding player
