@@ -1,0 +1,90 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <Spottedleaf@users.noreply.github.com>
+Date: Tue, 3 Oct 2023 06:03:34 -0700
+Subject: [PATCH] Region profiler
+
+Profiling for a region starts with the /profiler command.
+The usage for /profiler:
+/profiler <world> <block x> <block z> <time in s> [radius, default 100 blocks]
+
+Any region within the radius of the specified block coordinates
+will be profiled. The profiling will stop after the specified
+time has passed.
+
+Once the profiler finishes, it will place a report in
+the directory ./profiler/<id>.
+
+Since regions can split into smaller regions, or merge into
+other regions, the profiler will track this information. If
+a profiled region splits, then all of the regions it splits
+into are attached to the same profiler instance. If a profiled
+region merges into another region, then the merged region is
+profiled. This information is tracked and logged into the
+"journal.txt" file contained in the report directory. The
+journal tracks the region ids for the merge/split operations.
+
+Region profiling is placed into the "region-X.txt" file where
+X is the region id inside the profile directory. The header
+of the file describes some stats about the region, namely
+total profiling duration, ticks, utilisation, TPS, and MSPT.
+
+Then, the timing tree is follows. The format is as specified:
+
+There are two types of data recorded: Timers and Counters.
+
+Timers are specified as follows:
+<indent><name> X% total, Y% parent, self A% total, self B% children, avg D sum E, Fms raw sum
+The above specifies the format for a named timer.
+
+The <indent> specifies the number of parent timers.
+
+"X" represents the percentage of time the timer took relative
+to the entire profiling instance.
+
+"Y" represents the percentage of time the timer took relative
+to its _parents_ timer. For example:
+```
+Full Tick 100.000% total, 100.000% parent, self 0.889% total, self 0.889% children, avg 200.000 sum 200, 401.300ms raw sum
+|+++Tick World: minecraft:overworld 81.409% total, 81.409% parent, self 1.873% total, self 2.301% children, avg 1.000 sum 200, 326.694ms raw sum
+|---|---Entity Tick 56.784% total, 69.751% parent, self 6.049% total, self 10.652% children, avg 1.000 sum 200, 227.874ms raw sum
+```
+"Entity Tick" measured 69.751% of the time for the "Tick World: minecraft:overworld" timer.
+
+"A" represents the self time relative to the entire profiling instance.
+The self time is the amount of time for a timer that is _not_ measured
+by a child timer.
+
+"B" represents the self time relative to its _parents_ timer.
+
+"D" represents the average number of times the timer is invoked relative to
+its parent.
+For example:
+```
+|---|---|---Entity Tick: bat 2.642% total, 7.343% parent, self 2.642% total, self 100.000% children, avg 14.975 sum 2,995, 23.127ms raw sum
+```
+In this case, an average of 14.975 bats were ticked for every
+time the "Entity Tick" timer was invoked.
+
+"E" represents the total number of times the timer is invoked.
+
+"F" represents the total raw time accumulated by the timer.
+
+Counters are specified as follows:
+<indent>#<name> avg X sum Y
+
+The X is the average number of times the counter is invoked
+relative to the parent, exactly similar to the D field of Timers,
+where Y is the total number of times the counter is invoked.
+
+diff --git a/src/main/java/io/papermc/paper/command/PaperCommands.java b/src/main/java/io/papermc/paper/command/PaperCommands.java
+index b2da36202e59dfa23165528145d0fe08bb3966fb..4ccc2ce3743c260a86b27e951979eb8d5d5ae1db 100644
+--- a/src/main/java/io/papermc/paper/command/PaperCommands.java
++++ b/src/main/java/io/papermc/paper/command/PaperCommands.java
+@@ -25,6 +25,7 @@ public final class PaperCommands {
+         COMMANDS.put("paper", new PaperCommand("paper"));
+         COMMANDS.put("mspt", new MSPTCommand("mspt"));
+         COMMANDS.put("tps", new io.papermc.paper.threadedregions.commands.CommandServerHealth()); // Folia - region threading
++        COMMANDS.put("profiler", new io.papermc.paper.threadedregions.commands.CommandProfiler()); // Folia - region threading - profiler
+ 
+         COMMANDS.forEach((s, command) -> {
+             server.server.getCommandMap().register(s, "Paper", command);
