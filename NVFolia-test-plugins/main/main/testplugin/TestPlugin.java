@@ -52,12 +52,12 @@ public class TestPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent playerRespawnEvent) {
         getLogger().info("PlayerRespawnEvent called!");
-        // uncomment when testing respawn location modification
-        // playerRespawnEvent.setRespawnLocation(new Location(
-        //     Bukkit.getWorld("world"), 0, 9000, 0
-        // ));
-        // uncomment when testing player kicking during respawn
-        // playerRespawnEvent.getPlayer().kick(Component.text("Bye bye"));
+         uncomment when testing respawn location modification
+         playerRespawnEvent.setRespawnLocation(new Location(
+             Bukkit.getWorld("world"), 0, 9000, 0
+         ));
+        uncomment when testing player kicking during respawn
+        playerRespawnEvent.getPlayer().kick(Component.text("Bye bye"));
     }
 
     @EventHandler
