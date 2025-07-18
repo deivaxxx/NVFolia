@@ -25,8 +25,8 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 > - Adjustment and disabling of all Folia functions without restarting
 > - All new functions have been added to the DivineMC config. Selected for more convenient editing
 > - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
-**All the above features will appear in NVFolia-build-10**
 
+**All the above features will appear in NVFolia-build-10**
 **Planned supported versions 1.21.7 - 1.21.8**
 
 
