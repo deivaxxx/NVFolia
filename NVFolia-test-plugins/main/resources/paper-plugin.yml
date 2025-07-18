@@ -1,5 +1,5 @@
 name: "NVFolia-Test-Plugin"
 version: "SNAPSHOT"
-main: "io.canvasmc.testplugin.TestPlugin"
-api-version: "1.21.5"
+main: "io.folianv.testplugin.TestPlugin"
+api-version: "1.21.7"
 folia-supported: true
