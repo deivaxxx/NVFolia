@@ -1,7 +1,7 @@
 ![Brand](https://github.com/deivaxxx/NVFolia/blob/main/nvfolia.png)
 
 
-# NVFolia 🌴 1.21.5 - 1.21.7 Spigot Plugins Support
+# NVFolia 🌴 1.21.5 - 1.21.8 Spigot Plugins Support
 A fork of Folia that supports the Bukkit API and 90% of Spigot/Paper plugins
 
 ## I am not an official developer of Folia core. I am just creating a fork of it that will help run 90% of plugins on a multithreaded core.
