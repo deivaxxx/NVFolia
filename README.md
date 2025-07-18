@@ -27,7 +27,6 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 > - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
 
 **All the above features will appear in NVFolia-build-10**
-**Planned supported versions 1.21.7 - 1.21.8**
 
 
 ### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
