@@ -1,21 +1,4 @@
-package io.canvasmc.canvas;
-
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-
-public class TickTimes {
-    private long[] times;
-    private long intervalNs;
-
-    public TickTimes(int length) {
-        this.times = new long[length];
-        this.intervalNs = 50 * 1_000_000;
-    }
-
-    /**
-     * This is for internal use to update timings, don't use
-     */
-    @ApiStatus.Internal
+   @ApiStatus.Internal
     public void add(int index, long time) {
         times[index % times.length] = time;
     }
