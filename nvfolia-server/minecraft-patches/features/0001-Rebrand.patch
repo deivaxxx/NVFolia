@@ -1,0 +1,75 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Sat, 11 Jan 2025 22:22:01 +0300
+Subject: [PATCH] Rebrand
+
+
+diff --git a/net/minecraft/CrashReport.java b/net/minecraft/CrashReport.java
+index 394443d00e661715439be1e56dddc129947699a4..480ad57a6b7b74e6b83e9c6ceb69ea1feacca106 100644
+--- a/net/minecraft/CrashReport.java
++++ b/net/minecraft/CrashReport.java
+@@ -30,7 +30,7 @@ public class CrashReport {
+     private boolean trackingStackTrace = true;
+     private StackTraceElement[] uncategorizedStackTrace = new StackTraceElement[0];
+     private final SystemReport systemReport = new SystemReport();
+-    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO PURPUR INSTEAD!", ""); // Purpur - Rebrand
++    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO DIVINEMC INSTEAD!", ""); // DivineMC - Rebrand
+ 
+     public CrashReport(String title, Throwable exception) {
+         io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.deobfuscateThrowable(exception); // Paper
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index ac0ed2e7261a0d698fafd5b314108ff38a169073..8f32168ff0371a9168bbf9b08b2154200f8131a0 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1183,6 +1183,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     protected void runServer() {
+         try {
++            org.bxteam.divinemc.spark.ThreadDumperRegistry.REGISTRY.add(Thread.currentThread().getName()); // DivineMC
+             if (!this.initServer()) {
+                 throw new IllegalStateException("Failed to initialize server");
+             }
+diff --git a/net/minecraft/server/gui/MinecraftServerGui.java b/net/minecraft/server/gui/MinecraftServerGui.java
+index 614c7d9f673c926562acc8fa3b3788623900db41..33456c7c106abbddf743e1203a6e8122cf10b797 100644
+--- a/net/minecraft/server/gui/MinecraftServerGui.java
++++ b/net/minecraft/server/gui/MinecraftServerGui.java
+@@ -51,7 +51,7 @@ public class MinecraftServerGui extends JComponent {
+         } catch (Exception var3) {
+         }
+ 
+-        final JFrame jFrame = new JFrame("Purpur Minecraft server"); // Purpur - Improve GUI
++        final JFrame jFrame = new JFrame("DivineMC Minecraft server"); // Purpur - Improve GUI // DivineMC - Rebrand
+         final MinecraftServerGui minecraftServerGui = new MinecraftServerGui(server);
+         jFrame.setDefaultCloseOperation(2);
+         jFrame.add(minecraftServerGui);
+@@ -59,7 +59,7 @@ public class MinecraftServerGui extends JComponent {
+         jFrame.setLocationRelativeTo(null);
+         jFrame.setVisible(true);
+         // Paper start - Improve ServerGUI
+-        jFrame.setName("Purpur Minecraft server"); // Purpur - Improve GUI
++        jFrame.setName("DivineMC Minecraft server"); // Purpur - Improve GUI // DivineMC - Rebrand
+         try {
+             jFrame.setIconImage(javax.imageio.ImageIO.read(java.util.Objects.requireNonNull(MinecraftServerGui.class.getClassLoader().getResourceAsStream("logo.png"))));
+         } catch (java.io.IOException ignore) {
+@@ -69,7 +69,7 @@ public class MinecraftServerGui extends JComponent {
+             @Override
+             public void windowClosing(WindowEvent event) {
+                 if (!minecraftServerGui.isClosing.getAndSet(true)) {
+-                    jFrame.setTitle("Purpur Minecraft server - shutting down!"); // Purpur - Improve GUI
++                    jFrame.setTitle("DivineMC Minecraft server - shutting down!"); // Purpur - Improve GUI // DivineMC - Rebrand
+                     server.halt(true);
+                     minecraftServerGui.runFinalizers();
+                 }
+diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+index 77db68349aa73d33b86a867099c9395c96d5a02d..8d1174f25e0e90d0533970f4ddd8448442024936 100644
+--- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
++++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+@@ -308,7 +308,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+ 
+     // Paper start
+     private static void printOversizedLog(String msg, Path file, int x, int z) {
+-        org.apache.logging.log4j.LogManager.getLogger().fatal(msg + " (" + file.toString().replaceAll(".+[\\\\/]", "") + " - " + x + "," + z + ") Go clean it up to remove this message. /minecraft:tp " + (x<<4)+" 128 "+(z<<4) + " - DO NOT REPORT THIS TO PURPUR - You may ask for help on Discord, but do not file an issue. These error messages can not be removed."); // Purpur - Rebrand
++        org.apache.logging.log4j.LogManager.getLogger().fatal(msg + " (" + file.toString().replaceAll(".+[\\\\/]", "") + " - " + x + "," + z + ") Go clean it up to remove this message. /minecraft:tp " + (x<<4)+" 128 "+(z<<4) + " - DO NOT REPORT THIS TO DIVINEMC - You may ask for help on Discord, but do not file an issue. These error messages can not be removed."); // DivineMC - Rebrand
+     }
+ 
+     private static CompoundTag readOversizedChunk(RegionFile regionfile, ChunkPos chunkCoordinate) throws IOException {

@@ -1,0 +1,45 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Thu, 27 Mar 2025 00:04:19 +0300
+Subject: [PATCH] Paper PR: Throttle failed spawn attempts
+
+Original license: GPLv3
+Original project: https://github.com/PaperMC/Paper
+Paper pull request: https://github.com/PaperMC/Paper/pull/11099
+
+Example config in paper-world-defaults.yml:
+```
+    spawning-throttle:
+      failed-attempts-threshold: 1200
+      throttled-ticks-per-spawn:
+        ambient: 10 # default value in bukkit.yml tickers-per * 10
+        axolotls: 10
+        creature: 4000
+        monster: 10
+        underground_water_creature: 10
+        water_ambient: 10
+        water_creature: 10
+```
+
+diff --git a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+index 8e65586182bd586c95b8c4873fab6d6ff5975243..ed687b0ab589fd2ddb8bf77f42ba42cf8b1c2ea7 100644
+--- a/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/WorldConfiguration.java
+@@ -183,6 +183,17 @@ public class WorldConfiguration extends ConfigurationPart {
+             @MergeMap
+             public Reference2IntMap<MobCategory> ticksPerSpawn = Util.make(new Reference2IntOpenHashMap<>(NaturalSpawner.SPAWNING_CATEGORIES.length), map -> Arrays.stream(NaturalSpawner.SPAWNING_CATEGORIES).forEach(mobCategory -> map.put(mobCategory, -1)));
+ 
++            // Paper start - throttle failed spawn attempts
++            public SpawningThrottle spawningThrottle;
++
++            public class SpawningThrottle extends ConfigurationPart {
++                public IntOr.Disabled failedAttemptsThreshold = IntOr.Disabled.DISABLED;
++
++                @MergeMap
++                public Reference2IntMap<MobCategory> throttledTicksPerSpawn = Util.make(new Reference2IntOpenHashMap<>(NaturalSpawner.SPAWNING_CATEGORIES.length), map -> Arrays.stream(NaturalSpawner.SPAWNING_CATEGORIES).forEach(mobCategory -> map.put(mobCategory, -1)));
++            }
++            // Paper end - throttle failed spawn attempts
++
+             @ConfigSerializable
+             public record DespawnRangePair(@Required DespawnRange hard, @Required DespawnRange soft) {
+                 public static DespawnRangePair createDefault() {

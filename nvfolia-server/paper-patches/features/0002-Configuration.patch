@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Mon, 27 Jan 2025 20:53:24 +0300
+Subject: [PATCH] Configuration
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index d9d158ef36225345eec871fd6e6fb19db08d4c21..ade084fb8f6f9290104677d6fc10a72816715746 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -1060,6 +1060,13 @@ public final class CraftServer implements Server {
+         org.spigotmc.SpigotConfig.init((File) this.console.options.valueOf("spigot-settings")); // Spigot
+         this.console.paperConfigurations.reloadConfigs(this.console);
+         org.purpurmc.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur - Purpur config files
++        // DivineMC start - Configuration
++        try {
++            org.bxteam.divinemc.config.DivineConfig.init((File) console.options.valueOf("divinemc-settings"));
++        } catch (IOException e) {
++            this.logger.log(Level.WARNING, "Failed to load DivineMC configuration, " + e.getMessage());
++        }
++        // DivineMC end - Configuration
+         for (ServerLevel world : this.console.getAllLevels()) {
+             // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
+             world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
+@@ -1076,6 +1083,13 @@ public final class CraftServer implements Server {
+             }
+             world.spigotConfig.init(); // Spigot
+             world.purpurConfig.init(); // Purpur - Purpur config files
++            // DivineMC start - Configuration
++            try {
++                world.divineConfig.init();
++            } catch (IOException e) {
++                this.logger.log(Level.WARNING, "Failed to reload DivineMC configuration for world " + world.dimension().location(), e);
++            }
++            // DivineMC end - Configuration
+         }
+ 
+         Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index cc4f4fbbe1cacce5f0f5500a8dda199aa0bcdf31..03fe7d98252b93f4625359f50552e3cf60e82b9c 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -172,6 +172,14 @@ public class Main {
+                     .describedAs("Yml file");
+                 // Purpur end - Purpur config files
+ 
++                // DivineMC start - Configuration
++                acceptsAll(asList("divinemc", "divinemc-settings"), "File for DivineMC settings")
++                    .withRequiredArg()
++                    .ofType(File.class)
++                    .defaultsTo(new File("divinemc.yml"))
++                    .describedAs("Yml file");
++                // DivineMC end - Configuration
++
+                 this.accepts("server-name", "Name of the server")
+                         .withRequiredArg()
+                         .ofType(String.class)
