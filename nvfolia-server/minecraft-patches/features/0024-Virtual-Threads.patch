@@ -29,7 +29,7 @@ index 758ce439d2e10e6ef42a58d147a77093667e0acd..de622982f864d96a5b76efcd69f1836e
 @@ -481,7 +481,7 @@ public class Commands {
      }
  
-     // Fixed pool, but with discard policy
+     // Fixed tab-complete-scheduler, 
 -    public static final java.util.concurrent.ExecutorService COMMAND_SENDING_POOL = new java.util.concurrent.ThreadPoolExecutor(
 +    public static final java.util.concurrent.ExecutorService COMMAND_SENDING_POOL = org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualCommandBuilderScheduler ? java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor() : new java.util.concurrent.ThreadPoolExecutor( // DivineMC - Virtual Threads
          2, 2, 0, java.util.concurrent.TimeUnit.MILLISECONDS,
@@ -80,7 +80,7 @@ index 20ba45054c243fbb85e50cf0bdf75648730cb0bc..10aecbb88a9a3dae3ecdf28aa449f1a1
      private static final AtomicInteger UNIQUE_THREAD_ID = new AtomicInteger(0);
      static final Logger LOGGER = LogUtils.getLogger();
 -    private static final java.util.concurrent.ExecutorService authenticatorPool = java.util.concurrent.Executors.newCachedThreadPool(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).build()); // Paper - Cache authenticator threads
-+    // DivineMC start - Virtual Threads
++    // NVFolia patch DivineMC start - Virtual Threads
 +    private static final java.util.concurrent.ExecutorService authenticatorPool = org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualAuthenticatorScheduler
 +        ? java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()
 +        : java.util.concurrent.Executors.newCachedThreadPool(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).build()); // Paper - Cache authenticator threads
@@ -97,11 +97,11 @@ index b3d46e7687c572d9847124eb58e4a6011a78066c..9d2e2b1cff68383cd19b42e24559e300
  
      protected static ExecutorService createWorkerPool(int size) {
 -        return Executors.newFixedThreadPool(size, THREAD_FACTORY);
-+        // DivineMC start - Virtual Threads
++        // NVFolia patch DivineMC start - Virtual Threads
 +        return org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualServerTextFilterPool
 +            ? Executors.newVirtualThreadPerTaskExecutor()
 +            : Executors.newFixedThreadPool(size, THREAD_FACTORY);
-+        // DivineMC end - Virtual Threads
++        // NVFolia patch DivineMC end - Virtual Threads
      }
  
      protected ServerTextFilter(
