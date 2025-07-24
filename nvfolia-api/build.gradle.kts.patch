@@ -2,7 +2,7 @@
 +++ b/purpur-api/build.gradle.kts
 @@ -13,8 +_,8 @@
  // Keep in sync with paper-server adventure-text-serializer-ansi dep
- val adventureVersion = "4.21.0"
+ val adventureVersion = "4.23.0"
  val bungeeCordChatVersion = "1.21-R0.2-deprecated+build.21"
 -val slf4jVersion = "2.0.16"
 -val log4jVersion = "2.24.1"
@@ -37,12 +37,12 @@
      apiAndDocs("net.kyori:adventure-text-logger-slf4j")
  
 -    api("org.apache.maven:maven-resolver-provider:3.9.6") // make API dependency for Paper Plugins
--    compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
--    compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
+-    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
+-    implementation("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
 +    // DivineMC start - Bump dependencies
 +    api("org.apache.maven:maven-resolver-provider:3.9.9") // make API dependency for Paper Plugins
-+    compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.22")
-+    compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.9.22")
++    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.22")
++    implementation("org.apache.maven.resolver:maven-resolver-transport-http:1.9.22")
 +    // DivineMC end - Bump dependencies
  
      // Annotations - Slowly migrate to jspecify
@@ -106,7 +106,7 @@
 @@ -177,15 +_,13 @@
  val services = objects.newInstance<Services>()
  
- tasks.withType<Javadoc> {
+ tasks.withType<Javadoc>().configureEach {
 -    //(options as StandardJavadocDocletOptions).addStringOption("-add-modules", "jdk.incubator.vector") // Purpur - our javadocs need this for pufferfish's SIMD patch
 -    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Purpur - silence Paper's bajillion javadoc warnings
      val options = options as StandardJavadocDocletOptions
@@ -124,7 +124,7 @@
 @@ -199,7 +_,7 @@
          "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
          "https://javadoc.io/doc/org.slf4j/slf4j-api/$slf4jVersion/",
-         // "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/", // TODO: Broken
+         "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/",
 -        "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.7.3",
 +        "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.9.22", // DivineMC - Bump dependencies
      )
