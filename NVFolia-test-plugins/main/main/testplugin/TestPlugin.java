@@ -1,4 +1,4 @@
-package io.nvfolia.testplugin;
+package io.canvasmc.testplugin;
 
 import com.destroystokyo.paper.event.player.PlayerTeleportEndGatewayEvent;
 import net.minecraft.util.RandomSource;
@@ -18,7 +18,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("Enabling test plugin for NVFolia");
+        getLogger().info("Enabling test plugin for Canvas");
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getCommandMap().register("rtp", new BukkitCommand("rtp") {
             @Override
@@ -46,18 +46,18 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("Disabling test plugin for NVFolia");
+        getLogger().info("Disabling test plugin for Canvas");
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent playerRespawnEvent) {
         getLogger().info("PlayerRespawnEvent called!");
-         uncomment when testing respawn location modification
-         playerRespawnEvent.setRespawnLocation(new Location(
-             Bukkit.getWorld("world"), 0, 9000, 0
-         ));
-        uncomment when testing player kicking during respawn
-        playerRespawnEvent.getPlayer().kick(Component.text("Bye bye"));
+        // uncomment when testing respawn location modification
+        // playerRespawnEvent.setRespawnLocation(new Location(
+        //     Bukkit.getWorld("world"), 0, 9000, 0
+        // ));
+        // uncomment when testing player kicking during respawn
+        // playerRespawnEvent.getPlayer().kick(Component.text("Bye bye"));
     }
 
     @EventHandler
