@@ -30,7 +30,6 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 
 
 ### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
-```CanvasMc``` - A redesigned system that powers Folia
 
 ```Pufferfish```-Adding DAB system and optimizing asynchronous chunk appearance
 
