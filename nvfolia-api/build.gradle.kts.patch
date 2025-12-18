@@ -1,38 +1,41 @@
 --- a/purpur-api/build.gradle.kts
 +++ b/purpur-api/build.gradle.kts
-@@ -13,8 +_,8 @@
- // Keep in sync with paper-server adventure-text-serializer-ansi dep
- val adventureVersion = "4.23.0"
+@@ -11,11 +_,11 @@
+     withJavadocJar()
+ }
+ 
+-val annotationsVersion = "26.0.2"
++val annotationsVersion = "26.0.2-1" // DivineMC - Bump dependencies
+ val adventureVersion = "4.25.0"
  val bungeeCordChatVersion = "1.21-R0.2-deprecated+build.21"
 -val slf4jVersion = "2.0.16"
 -val log4jVersion = "2.24.1"
 +val slf4jVersion = "2.0.17" // DivineMC - Bump dependencies
-+val log4jVersion = "2.24.3" // DivineMC - Bump dependencies
++val log4jVersion = "2.25.2" // DivineMC - Bump dependencies
  
  val apiAndDocs: Configuration by configurations.creating {
      attributes {
-@@ -41,9 +_,9 @@
+@@ -42,9 +_,9 @@
  
  dependencies {
      // api dependencies are listed transitively to API consumers
 -    api("com.google.guava:guava:33.3.1-jre")
--    api("com.google.code.gson:gson:2.11.0")
--    api("org.yaml:snakeyaml:2.2")
 +    api("com.google.guava:guava:33.4.0-jre") // DivineMC - Bump dependencies
-+    api("com.google.code.gson:gson:2.12.1") // DivineMC - Bump dependencies
-+    api("org.yaml:snakeyaml:2.3") // DivineMC - Bump dependencies
+     api("com.google.code.gson:gson:2.11.0")
+-    api("org.yaml:snakeyaml:2.2")
++    api("org.yaml:snakeyaml:2.5") // DivineMC - Bump dependencies
      api("org.joml:joml:1.10.8") {
          isTransitive = false // https://github.com/JOML-CI/JOML/issues/352
      }
-@@ -51,6 +_,7 @@
+@@ -52,6 +_,7 @@
      api("org.apache.logging.log4j:log4j-api:$log4jVersion")
      api("org.slf4j:slf4j-api:$slf4jVersion")
      api("com.mojang:brigadier:1.3.10")
-+    api("io.sentry:sentry:8.4.0") // DivineMC - Pufferfish: Sentry
++    api("io.sentry:sentry:8.25.0") // DivineMC - Pufferfish: Sentry
  
      // Deprecate bungeecord-chat in favor of adventure
      api("net.md-5:bungeecord-chat:$bungeeCordChatVersion") {
-@@ -65,9 +_,11 @@
+@@ -66,29 +_,35 @@
      apiAndDocs("net.kyori:adventure-text-serializer-plain")
      apiAndDocs("net.kyori:adventure-text-logger-slf4j")
  
@@ -40,31 +43,45 @@
 -    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
 -    implementation("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
 +    // DivineMC start - Bump dependencies
-+    api("org.apache.maven:maven-resolver-provider:3.9.9") // make API dependency for Paper Plugins
++    api("org.apache.maven:maven-resolver-provider:3.9.11") // make API dependency for Paper Plugins
 +    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.22")
 +    implementation("org.apache.maven.resolver:maven-resolver-transport-http:1.9.22")
 +    // DivineMC end - Bump dependencies
  
      // Annotations - Slowly migrate to jspecify
      val annotations = "org.jetbrains:annotations:$annotationsVersion"
-@@ -83,11 +_,13 @@
+     compileOnly(annotations)
+     testCompileOnly(annotations)
+ 
+-    val checkerQual = "org.checkerframework:checker-qual:3.49.2"
++    val checkerQual = "org.checkerframework:checker-qual:3.51.1" // DivineMC - Bump dependencies
+     compileOnlyApi(checkerQual)
+     testCompileOnly(checkerQual)
+ 
+     api("org.jspecify:jspecify:1.0.0")
+ 
      // Test dependencies
-     testImplementation("org.apache.commons:commons-lang3:3.17.0")
-     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+-    testImplementation("org.apache.commons:commons-lang3:3.17.0")
+-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
 -    testImplementation("org.hamcrest:hamcrest:2.2")
 -    testImplementation("org.mockito:mockito-core:5.14.1")
-+    testImplementation("org.hamcrest:hamcrest:3.0") // DivineMC - Bump dependencies
-+    testImplementation("org.mockito:mockito-core:5.16.1") // DivineMC - Bump dependencies
-     testImplementation("org.ow2.asm:asm-tree:9.8")
+-    testImplementation("org.ow2.asm:asm-tree:9.8")
 -    mockitoAgent("org.mockito:mockito-core:5.14.1") { isTransitive = false } // configure mockito agent that is needed in newer java versions
-+    mockitoAgent("org.mockito:mockito-core:5.16.1") { isTransitive = false } // configure mockito agent that is needed in newer java versions // DivineMC - Bump dependencies
++    // DivineMC start - Bump dependencies
++    testImplementation("org.apache.commons:commons-lang3:3.19.0")
++    testImplementation("org.junit.jupiter:junit-jupiter:6.0.1")
++    testImplementation("org.hamcrest:hamcrest:3.0")
++    testImplementation("org.mockito:mockito-core:5.20.0")
++    testImplementation("org.ow2.asm:asm-tree:9.9")
++    mockitoAgent("org.mockito:mockito-core:5.20.0") { isTransitive = false } // configure mockito agent that is needed in newer java versions
++    // DivineMC end - Bump dependencies
      testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 +
-+    compileOnly("org.apache.commons:commons-lang3:3.17.0") // DivineMC - Required for Bukkit
++    compileOnly("org.apache.commons:commons-lang3:3.19.0") // DivineMC - Required for Bukkit
  }
  
  val generatedDir: java.nio.file.Path = rootProject.layout.projectDirectory.dir("paper-api/src/generated/java").asFile.toPath()
-@@ -101,17 +_,21 @@
+@@ -102,17 +_,21 @@
          java {
              srcDir(generatedDir)
              srcDir(file("../paper-api/src/main/java"))
@@ -86,10 +103,42 @@
          }
      }
  }
-@@ -159,6 +_,16 @@
-     }
- }
+@@ -194,14 +_,13 @@
+ val services = objects.newInstance<Services>()
  
+ tasks.withType<Javadoc>().configureEach {
+-    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Purpur - silence Paper's bajillion javadoc warnings
+     val options = options as StandardJavadocDocletOptions
+     options.overview = "../paper-api/src/main/javadoc/overview.html"
+     options.use()
+     options.isDocFilesSubDirs = true
+     options.links(
+-        "https://guava.dev/releases/33.3.1-jre/api/docs/",
+-        "https://www.javadocs.dev/org.yaml/snakeyaml/2.2/",
++        "https://guava.dev/releases/33.4.0-jre/api/docs/", // DivineMC - Bump dependencies
++        "https://javadoc.io/doc/org.yaml/snakeyaml/2.3/", // DivineMC - Bump dependencies
+         "https://www.javadocs.dev/org.jetbrains/annotations/$annotationsVersion/",
+         "https://www.javadocs.dev/org.joml/joml/1.10.8/",
+         "https://www.javadocs.dev/com.google.code.gson/gson/2.11.0",
+@@ -215,7 +_,7 @@
+         "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
+         "https://www.javadocs.dev/org.slf4j/slf4j-api/$slf4jVersion/",
+         "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/",
+-        "https://www.javadocs.dev/org.apache.maven.resolver/maven-resolver-api/1.7.3",
++        "https://www.javadocs.dev/org.apache.maven.resolver/maven-resolver-api/1.9.22", // DivineMC - Bump dependencies
+     )
+     options.tags("apiNote:a:API Note:")
+ 
+@@ -239,7 +_,20 @@
+             into("build/docs/javadoc")
+         }
+     }
+-}
++
++    options.addStringOption("Xdoclint:none", "-quiet") // DivineMC - Hide unnecessary javadoc warnings
++    options.addStringOption("-add-modules", "jdk.incubator.vector") // DivineMC - Required for simd
++}
++
 +// DivineMC start - Hide unnecessary compilation warnings
 +tasks.withType<JavaCompile> {
 +    val compilerArgs = options.compilerArgs
@@ -99,44 +148,6 @@
 +    compilerArgs.add("--add-modules=jdk.incubator.vector")
 +}
 +// DivineMC end - Hide unnecessary compilation warnings
-+
- tasks.jar {
-     from(generateApiVersioningFile.map { it.outputs.files.singleFile }) {
-         into("META-INF/maven/${project.group}/${project.name}")
-@@ -177,15 +_,13 @@
- val services = objects.newInstance<Services>()
- 
- tasks.withType<Javadoc>().configureEach {
--    //(options as StandardJavadocDocletOptions).addStringOption("-add-modules", "jdk.incubator.vector") // Purpur - our javadocs need this for pufferfish's SIMD patch
--    (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Purpur - silence Paper's bajillion javadoc warnings
-     val options = options as StandardJavadocDocletOptions
-     options.overview = "../paper-api/src/main/javadoc/overview.html"
-     options.use()
-     options.isDocFilesSubDirs = true
-     options.links(
--        "https://guava.dev/releases/33.3.1-jre/api/docs/",
--        "https://javadoc.io/doc/org.yaml/snakeyaml/2.2/",
-+        "https://guava.dev/releases/33.4.0-jre/api/docs/", // DivineMC - Bump dependencies
-+        "https://javadoc.io/doc/org.yaml/snakeyaml/2.3/", // DivineMC - Bump dependencies
-         "https://javadoc.io/doc/org.jetbrains/annotations/$annotationsVersion/",
-         "https://javadoc.io/doc/org.joml/joml/1.10.8/",
-         "https://www.javadoc.io/doc/com.google.code.gson/gson/2.11.0",
-@@ -199,7 +_,7 @@
-         "https://jd.advntr.dev/text-logger-slf4j/$adventureVersion/",
-         "https://javadoc.io/doc/org.slf4j/slf4j-api/$slf4jVersion/",
-         "https://logging.apache.org/log4j/2.x/javadoc/log4j-api/",
--        "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.7.3",
-+        "https://javadoc.io/doc/org.apache.maven.resolver/maven-resolver-api/1.9.22", // DivineMC - Bump dependencies
-     )
-     options.tags("apiNote:a:API Note:")
- 
-@@ -223,6 +_,9 @@
-             into("build/docs/javadoc")
-         }
-     }
-+
-+    options.addStringOption("Xdoclint:none", "-quiet") // DivineMC - Hide unnecessary javadoc warnings
-+    options.addStringOption("-add-modules", "jdk.incubator.vector") // DivineMC - Required for simd
- }
  
  tasks.test {
+     useJUnitPlatform()
