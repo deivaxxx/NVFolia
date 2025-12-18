@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: WMGameLive <andu890201@gmail.com>
+Date: Sun, 21 Jul 2024 19:36:01 +0800
+Subject: [PATCH] Fix MC-167242
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index d58f845dc814011b8126cc641476b6e4e25bc328..45f3b7fa89d8004608efa402e64619bf40464d2e 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -999,6 +999,11 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+                 world.addFreshEntityWithPassengers(entitywitch, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.LIGHTNING);
+                 // CraftBukkit end
+                 this.releaseAllPois();
++
++                if(this.isSleeping()) {
++                    this.stopSleeping();
++                }
++
+                 this.discard(EntityRemoveEvent.Cause.TRANSFORMATION); // CraftBukkit - add Bukkit remove cause
+             } else {
+                 super.thunderHit(world, lightning);
