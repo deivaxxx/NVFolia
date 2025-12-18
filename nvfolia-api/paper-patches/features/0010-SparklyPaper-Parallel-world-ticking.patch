@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Tue, 28 Oct 2025 16:26:54 +0300
+Subject: [PATCH] SparklyPaper: Parallel world ticking
+
+Original license: MIT
+Original project (API): https://github.com/Biquaternions/Fish
+Original project: https://github.com/SparklyPower/SparklyPaper
+
+This patch provides an API for performance monitoring plugins.
+
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index 485af1c80e5e1cefbce3849a108a1acee1f81cf4..0e3d693aad335350e64b374fb978c74770632e67 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -2894,4 +2894,15 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+     @Deprecated
+     void clearBlockHighlights();
+     // Purpur end - Debug Marker API
++
++    // DivineMC start - Parallel world ticking
++    /**
++     * Returns whether the software has the Parallel World Ticking feature enabled
++     *
++     * @return If the Parallel World Ticking feature is enabled
++     */
++    public default boolean isParallelWorldTickingEnabled() {
++        return false;
++    }
++    // DivineMC end - Parallel world ticking
+ }
+diff --git a/src/main/java/org/bukkit/World.java b/src/main/java/org/bukkit/World.java
+index 7822416f5cc4e453338f9257d5aa24e3ec4341a2..0ec03a25ae53ed2b542301ba829e4e2b9a201f72 100644
+--- a/src/main/java/org/bukkit/World.java
++++ b/src/main/java/org/bukkit/World.java
+@@ -4745,4 +4745,23 @@ public interface World extends RegionAccessor, WorldInfo, PluginMessageRecipient
+             }
+         }
+     }
++
++    // DivineMC start - Parallel world ticking
++    /**
++     * Get a sample of the world last tick times (in nanos)
++     *
++     * @return A sample of the world last tick times (in nanos)
++     */
++    public default long @NotNull [] getTickTimes() {
++        return new long[0];
++    }
++    /**
++     * Get the world's average tick time (in millis)
++     *
++     * @return World's local average tick time (in millis)
++     */
++    public default double getAverageTickTime () {
++        return 0.0;
++    }
++    // DivineMC end - Parallel world ticking
+ }
