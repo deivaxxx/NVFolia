@@ -1,0 +1,29 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Sun, 23 Mar 2025 16:39:45 +0300
+Subject: [PATCH] Paper PR: Add FillBottleEvents for player and dispenser
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+index 690181c032667326c2e9c7edf678b2cdcd319c64..d37d7ae608c80913afdde48c3e03d11e4697d1d1 100644
+--- a/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -2389,4 +2389,18 @@ public class CraftEventFactory {
+         }
+         return false;
+     }
++
++    // DivineMC start - Paper PR: Add FillBottleEvents for player and dispenser
++    public static io.papermc.paper.event.player.PlayerFillBottleEvent callPlayerFillBottleEvent(net.minecraft.world.entity.player.Player player, InteractionHand hand, ItemStack glassBottle, ItemStack resultItem) {
++        final io.papermc.paper.event.player.PlayerFillBottleEvent event = new io.papermc.paper.event.player.PlayerFillBottleEvent(((org.bukkit.entity.Player) player.getBukkitEntity()), org.bukkit.craftbukkit.CraftEquipmentSlot.getHand(hand), CraftItemStack.asBukkitCopy(glassBottle), CraftItemStack.asCraftMirror(resultItem));
++        event.callEvent();
++        return event;
++    }
++
++    public static io.papermc.paper.event.block.BlockFillBottleEvent callBlockFillBottleEvent(LevelAccessor level, BlockPos blockPos, ItemStack glassBottle, ItemStack resultItem) {
++        final io.papermc.paper.event.block.BlockFillBottleEvent event = new io.papermc.paper.event.block.BlockFillBottleEvent(CraftBlock.at(level, blockPos), CraftItemStack.asBukkitCopy(glassBottle), CraftItemStack.asCraftMirror(resultItem));
++        event.callEvent();
++        return event;
++    }
++    // DivineMC end - Paper PR: Add FillBottleEvents for player and dispenser
+ }
