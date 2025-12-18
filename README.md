@@ -1,14 +1,14 @@
 ![Brand](https://github.com/deivaxxx/NVFolia/blob/main/nvfolia.png)
 
 
-# NVFolia 🌴 1.21.5 - 1.21.8 Spigot Plugins Support
-A fork of Folia that supports the Bukkit API and 90% of Spigot/Paper plugins
+# NVFolia 🌴 1.21.5 - 1.21.11 Spigot Plugins Support
+A fork of Folia that supports the Bukkit API and 80% of Spigot/Paper plugins
 
 ## I am not an official developer of Folia core. I am just creating a fork of it that will help run 90% of plugins on a multithreaded core.
 Please! The NVFolia is in effective development, and when using it, save a backup of the world
 
 Most plugins have a multithreaded Folia compatibility setting, I'm building an API that runs entirely on Paper/Spigot but adds all of Folia's functionality
-# The core is in Alpha Testing!
+# The core is in Beta Testing!
 
 # What is included in the core component?
 > - All Folia components and chunk division
