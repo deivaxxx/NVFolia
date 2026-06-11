@@ -1,0 +1,36 @@
+name: Build Pull Request
+
+on:
+  pull_request:
+    branches: [ "ver/26.1.2" ]
+
+jobs:
+  build:
+    runs-on: blacksmith-8vcpu-ubuntu-2404
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup JDK 21
+        uses: useblacksmith/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Configure Git and Gradle
+        run: |
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "Github Actions"
+          chmod +x gradlew
+
+      - name: Apply Patches
+        run: ./gradlew applyAllPatches --stacktrace --no-daemon
+
+      - name: Build Paperclip Jar
+        run: ./gradlew createMojmapPaperclipJar --stacktrace --no-daemon
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: DivineMC
+          path: divinemc-server/build/libs/divinemc-paperclip-*-mojmap.jar
