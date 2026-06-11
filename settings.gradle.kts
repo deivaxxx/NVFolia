@@ -3,8 +3,7 @@ import java.util.Locale
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://central.sonatype.com/repository/maven-snapshots/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -16,23 +15,39 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The NVfolia project directory is not a properly cloned Git repository.
+         The DivineMC project directory is not a properly cloned Git repository.
          
-         In order to build Canvas from source you must clone
-         the Canvas repository using Git, not download a code
-         zip from GitHub.  
-         See https://github.com/deivaxxx/NVFolia
-         for further information on building and modifying NVfolia.
+         In order to build DivineMC from source you must clone
+         the DivineMC repository using Git, not download a code
+         zip from GitHub.
+         
+         Built DivineMC jars are available for download at
+         https://bxteam.org/downloads/divinemc or 
+         at https://mcjars.app/DIVINEMC/versions
+         
+         See https://bxteam.org/docs/divinemc/development/contributing
+         for further information on building and modifying DivineMC.
         ===================================================
     """.trimIndent()
     error(errorText)
 }
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "DivineMC"
 
-rootProject.name = "canvas"
-for (name in listOf("canvas-api", "canvas-server", "canvas-test-plugin")) {
+for (name in listOf("divinemc-api", "divinemc-server")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)
+}
+
+gradle.lifecycle.beforeProject {
+    val mcVersion = providers.gradleProperty("mcVersion").get().trim()
+    val divinemcChannel = providers.gradleProperty("channel").get().trim()
+    val divinemcBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
+    val versionString = if (divinemcBuildNumber == null) {
+        "$mcVersion.local-SNAPSHOT"
+    } else {
+        "$mcVersion.build.$divinemcBuildNumber-${divinemcChannel.lowercase()}"
+    }
+    version = versionString
 }
