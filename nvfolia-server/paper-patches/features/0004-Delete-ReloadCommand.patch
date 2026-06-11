@@ -5,10 +5,10 @@ Subject: [PATCH] Delete ReloadCommand
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index ade084fb8f6f9290104677d6fc10a72816715746..8014666a5145c46d7ecd40b2175f0990e699db47 100644
+index bbfe73ea5f9494d192096436e12b6659889b99ae..c33e0794673380e640ea90187cf773ad2789bc77 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -1020,11 +1020,6 @@ public final class CraftServer implements Server {
+@@ -967,11 +967,6 @@ public final class CraftServer implements Server {
  
      @Override
      public void reload() {
