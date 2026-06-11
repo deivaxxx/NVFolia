@@ -5,44 +5,45 @@ Subject: [PATCH] Configuration
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index debea77d5777b90c6b17b225e27e6b3c72370175..f5761420749110ca8811533c3fb5d80c8b025c67 100644
+index 891df1e27e6f7d6c8b331eb446bb80ceb8f853e0..b85a6ce9029b45a749e0ad8eff39abd4c4886669 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -193,6 +193,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -269,6 +269,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+             this.setLocalIp(properties.serverIp);
+         }
+ 
++        org.bxteam.divinemc.config.DivineConfig.init((java.io.File) options.valueOf("divinemc-settings")); // DivineMC - Configuration
++
+         // Spigot start
+         this.setPlayerList(new DedicatedPlayerList(this, this.registries(), this.playerDataStorage));
+         org.spigotmc.SpigotConfig.init((java.io.File) this.options.valueOf("spigot-settings"));
+@@ -283,6 +285,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          }
          org.purpurmc.purpur.PurpurConfig.registerCommands();
-         // Purpur end - Purpur config files
-+        // DivineMC start - Configuration
-+        try {
-+            org.bxteam.divinemc.config.DivineConfig.init((java.io.File) options.valueOf("divinemc-settings"));
-+        } catch (Exception e) {
-+            DedicatedServer.LOGGER.error("Unable to load DivineMC configuration", e);
-+            return false;
-+        }
-+        org.bxteam.divinemc.command.DivineCommands.registerCommands(this);
-+        // DivineMC end - Configuration
-         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
- 
-         // DivineMC start - Pufferfish SIMD
+         // Purpur end - Migrate Setting to reintroduce end void rings
++        org.bxteam.divinemc.command.DivineCommands.registerCommands(this); // DivineMC - Configuration
+         // Paper start - initialize global and world-defaults configuration
+         this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
+         this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index 801c4e8e01590beeb3633275f58d436d87ad746e..5ffaae02967dbc079619d35c2b8e3f7763b75d38 100644
+index 4464428c9163fa33ea6f750af4d14a030fcbcf20..8db987b78010688e76fda817650e29eb1019f7e8 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -161,6 +161,7 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
+@@ -172,6 +172,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
      // Paper end - add paper world config
  
      public final org.purpurmc.purpur.PurpurWorldConfig purpurConfig; // Purpur - Purpur config files
 +    public final org.bxteam.divinemc.config.DivineWorldConfig divineConfig; // DivineMC - Configuration
      public static @Nullable BlockPos lastPhysicsProblem; // Spigot
-     private int tileTickPosition;
      public final Map<ServerExplosion.CacheKey, Float> explosionDensityCache = new java.util.HashMap<>(); // Paper - Optimize explosions
-@@ -885,6 +886,14 @@ public abstract class Level implements LevelAccessor, UUIDLookup<Entity>, AutoCl
-         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName()); // Spigot
+     public java.util.ArrayDeque<net.minecraft.world.level.block.RedstoneTorchBlock.Toggle> redstoneUpdateInfos; // Paper - Faster redstone torch rapid clock removal; Move from Map in BlockRedstoneTorch to here
+@@ -897,6 +898,14 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(bukkitName, worldKey); // Spigot
          this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper - create paper world config
-         this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), environment); // Purpur - Purpur config files
+         this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(bukkitName, environment, worldKey); // Purpur - Purpur config files
 +        // DivineMC start - Configuration
 +        try {
-+            this.divineConfig = new org.bxteam.divinemc.config.DivineWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), environment);
++            this.divineConfig = new org.bxteam.divinemc.config.DivineWorldConfig(bukkitName, environment, worldKey);
 +        } catch (java.io.IOException e) {
 +            net.minecraft.server.MinecraftServer.LOGGER.error("Failed to load DivineMC configuration for world '{}'", ((net.minecraft.world.level.storage.PrimaryLevelData) levelData).getLevelName(), e);
 +            throw new RuntimeException(e);
@@ -50,4 +51,4 @@ index 801c4e8e01590beeb3633275f58d436d87ad746e..5ffaae02967dbc079619d35c2b8e3f77
 +        // DivineMC end - Configuration
          this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur - Add adjustable breeding cooldown to config
          this.generator = generator;
-         this.world = new CraftWorld((ServerLevel) this, generator, biomeProvider, environment);
+         this.world = new CraftWorld((ServerLevel) this, worldKey, biomeProvider, environment);

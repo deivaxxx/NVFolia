@@ -1,0 +1,111 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Wed, 11 Jun 2025 19:33:13 +0300
+Subject: [PATCH] Carpet-AMS-Addition: Optimized dragon respawn
+
+This patch is based on the following mixins and classes:
+* "club/mcams/carpet/mixin/rule/optimizedDragonRespawn/BlockPatternMixin.java"
+* "club/mcams/carpet/mixin/rule/optimizedDragonRespawn/EnderDragonFightMixin.java"
+* "club/mcams/carpet/helpers/rule/optimizedDragonRespawn/BlockPatternHelper.java"
+By: 1024-byteeeee
+As part of: Carpet-AMS-Addition (https://github.com/Minecraft-AMS/Carpet-AMS-Addition)
+Licensed under: LGPL-3.0 (https://www.gnu.org/licenses/lgpl-3.0.html)
+
+diff --git a/net/minecraft/world/level/block/state/pattern/BlockPattern.java b/net/minecraft/world/level/block/state/pattern/BlockPattern.java
+index ed5a5fb38bfe8fb9216c7eab00b833485c4bbade..c7255e5363e6895c136e590baa026772a5e514dd 100644
+--- a/net/minecraft/world/level/block/state/pattern/BlockPattern.java
++++ b/net/minecraft/world/level/block/state/pattern/BlockPattern.java
+@@ -57,7 +57,7 @@ public class BlockPattern {
+         return this.matches(origin, forwards, up, cache);
+     }
+ 
+-    private BlockPattern.@Nullable BlockPatternMatch matches(
++    public BlockPattern.@Nullable BlockPatternMatch matches( // DivineMC - Carpet-AMS-Addition: Optimized dragon respawn - make public
+         final BlockPos origin, final Direction forwards, final Direction up, final LoadingCache<BlockPos, BlockInWorld> cache
+     ) {
+         for (int x = 0; x < this.width; x++) {
+diff --git a/net/minecraft/world/level/dimension/end/EnderDragonFight.java b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+index 7f0f5ce66dd0bc4a6e86d0534546c402c601fde2..d401a03bc26e9ced1ce33e7f77cba11155a9e41c 100644
+--- a/net/minecraft/world/level/dimension/end/EnderDragonFight.java
++++ b/net/minecraft/world/level/dimension/end/EnderDragonFight.java
+@@ -311,7 +311,68 @@ public class EnderDragonFight extends SavedData {
+         return false;
+     }
+ 
++    // DivineMC start - Carpet-AMS-Addition: Optimized dragon respawn
++    private int cachePortalChunkIteratorX = -8;
++    private int cachePortalChunkIteratorZ = -8;
++    private int cachePortalOriginIteratorY = -1;
++    // DivineMC end - Carpet-AMS-Addition: Optimized dragon respawn
++
+     public BlockPattern.@Nullable BlockPatternMatch findExitPortal() {
++        // DivineMC start - Carpet-AMS-Addition: Optimized dragon respawn
++        if (org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.optimizedDragonRespawn) {
++            int i, j;
++            for (i = cachePortalChunkIteratorX; i <= 8; ++i) {
++                for (j = cachePortalChunkIteratorZ; j <= 8; ++j) {
++                    LevelChunk worldChunk = this.level.getChunk(i, j);
++                    for (BlockEntity blockEntity : worldChunk.getBlockEntities().values()) {
++                        if (blockEntity instanceof net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity) {
++                            continue;
++                        }
++                        if (blockEntity instanceof TheEndPortalBlockEntity) {
++                            BlockPattern.BlockPatternMatch blockPatternMatch = this.exitPortalPattern.find(this.level, blockEntity.getBlockPos());
++                            if (blockPatternMatch != null) {
++                                BlockPos blockPos = blockPatternMatch.getBlock(3, 3, 3).getPos();
++                                if (this.exitPortalLocation == null) {
++                                    this.exitPortalLocation = blockPos;
++                                }
++
++                                cachePortalChunkIteratorX = i;
++                                cachePortalChunkIteratorZ = j;
++                                return blockPatternMatch;
++                            }
++                        }
++                    }
++                }
++            }
++
++            if (this.needsStateScanning || this.exitPortalLocation == null) {
++                if (cachePortalOriginIteratorY != -1) {
++                    i = cachePortalOriginIteratorY;
++                } else {
++                    i = this.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, EndPodiumFeature.getLocation(BlockPos.ZERO)).getY();
++                }
++                boolean notFirstSearch = false;
++                for (j = i; j >= 0; --j) {
++                    BlockPattern.BlockPatternMatch result2 = null;
++                    if (notFirstSearch) {
++                        result2 = org.bxteam.divinemc.util.BlockPatternHelper.partialSearchAround(this.exitPortalPattern, this.level, new BlockPos(EndPodiumFeature.getLocation(BlockPos.ZERO).getY(), j, EndPodiumFeature.getLocation(BlockPos.ZERO).getZ()));
++                    } else {
++                        result2 = this.exitPortalPattern.find(this.level, new BlockPos(EndPodiumFeature.getLocation(BlockPos.ZERO).getX(), j, EndPodiumFeature.getLocation(BlockPos.ZERO).getZ()));
++                    }
++                    if (result2 != null) {
++                        if (this.exitPortalLocation == null) {
++                            this.exitPortalLocation = result2.getBlock(3, 3, 3).getPos();
++                        }
++                        cachePortalOriginIteratorY = j;
++                        return result2;
++                    }
++                    notFirstSearch = true;
++                }
++            }
++
++            return null;
++        }
++        // DivineMC end - Carpet-AMS-Addition: Optimized dragon respawn
+         ChunkPos chunkOrigin = ChunkPos.containing(this.origin);
+ 
+         for (int x = -8 + chunkOrigin.x(); x <= 8 + chunkOrigin.x(); x++) {
+@@ -608,6 +669,11 @@ public class EnderDragonFight extends SavedData {
+     }
+ 
+     public boolean respawnDragon(final List<EndCrystal> crystals) { // CraftBukkit - return boolean
++        // DivineMC start - Carpet-AMS-Addition: Optimized dragon respawn
++        cachePortalChunkIteratorX = -8;
++        cachePortalChunkIteratorZ = -8;
++        cachePortalOriginIteratorY = -1;
++        // DivineMC end - Carpet-AMS-Addition: Optimized dragon respawn
+         if (this.dragonKilled && this.respawnStage == null) {
+             for (BlockPattern.BlockPatternMatch portal = this.findExitPortal(); portal != null; portal = this.findExitPortal()) {
+                 for (int x = 0; x < this.exitPortalPattern.getWidth(); x++) {

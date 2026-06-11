@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Wed, 11 Jun 2025 19:12:00 +0300
+Subject: [PATCH] Reduce chunk loading & lookups
+
+Original license: GPL v3
+Original project: https://github.com/pufferfish-gg/Pufferfish
+
+diff --git a/net/minecraft/world/entity/monster/EnderMan.java b/net/minecraft/world/entity/monster/EnderMan.java
+index 8979340756abaec961b2263146c1e1e79d144117..fad2bd015cae455cb18d6dba4a05a8e882f83a7b 100644
+--- a/net/minecraft/world/entity/monster/EnderMan.java
++++ b/net/minecraft/world/entity/monster/EnderMan.java
+@@ -332,11 +332,28 @@ public class EnderMan extends Monster implements NeutralMob {
+     private boolean teleport(final double x, final double y, final double z) {
+         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+ 
+-        while (pos.getY() > this.level().getMinY() && !this.level().getBlockState(pos).blocksMotion()) {
+-            pos.move(Direction.DOWN);
++        // DivineMC start - Reduce chunk loading & lookups
++        BlockState blockState;
++        if (org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.reduceChuckLoadAndLookup) {
++            net.minecraft.world.level.chunk.LevelChunk chunk = this.level().getChunkIfLoaded(pos);
++            if (chunk == null) {
++                return false;
++            }
++
++            while (pos.getY() > this.level().getMinY() && !chunk.getBlockState(pos).blocksMotion()) {
++                pos.move(Direction.DOWN);
++            }
++
++            blockState = chunk.getBlockState(pos);
++        } else {
++            while (pos.getY() > this.level().getMinY() && !this.level().getBlockState(pos).blocksMotion()) {
++                pos.move(Direction.DOWN);
++            }
++
++            blockState = this.level().getBlockState(pos);
+         }
++        // DivineMC end - Reduce chunk loading & lookups
+ 
+-        BlockState blockState = this.level().getBlockState(pos);
+         boolean couldStandOn = blockState.blocksMotion();
+         boolean isWet = blockState.getFluidState().is(FluidTags.WATER);
+         if (couldStandOn && !isWet) {
