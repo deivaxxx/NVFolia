@@ -27,7 +27,7 @@ Delayed and hopefully will not forget:
 - Projectile#getOwner ...
   
 Ideas:
-
+- Denizen 26.1.2
 Issues:
-
+- threads
 To check:
