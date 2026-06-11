@@ -11,4 +11,4 @@
 # To import minecraft data files, like the default chat type, use `mc_data` as the prefix:
 #     mc_data chat_type/chat.json
 #     mc_data dimension_type/overworld.json
-#
+#     mc_data dimension_type/world_nether.json
