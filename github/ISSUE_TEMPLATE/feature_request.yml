@@ -1,0 +1,15 @@
+name: Feature request
+description: Suggest an idea to improve NVFolia
+labels: ["enhancement"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We are always looking for ways to improve NVFolia, and your feedback is invaluable to us. Please fill out the form below to help us understand your feature request better.
+  - type: textarea
+    attributes:
+      label: What feature do you want to see added?
+      description: A clear and concise description of your feature request.
+    validations:
+      required: true
