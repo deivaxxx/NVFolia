@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
-Date: Sat, 8 Mar 2025 16:58:24 +0300
+From: deivaxxx <76615486+deivaxxx@gmail.noreply.github.com>
+Date: Sat, 13 Jun 2026 14:28:24 +0300
 Subject: [PATCH] MSPT Tracking for each world
 
 
@@ -24,7 +24,7 @@ index 8769993e7ca59da309087051a3cd38fc562c15d1..2eda6de8df6f8eb90bb84d12c3a88ca3
 -        bossbar.progress(getBossBarProgress());
 -        bossbar.color(getBossBarColor());
 -        bossbar.name(MiniMessage.miniMessage().deserialize(PurpurConfig.commandTPSBarTitle,
-+        // DivineMC start - MSPT Tracking for each world
++        // NVFolia start - MSPT Tracking for each world
 +        if (org.bxteam.divinemc.config.DivineConfig.AsyncCategory.enableParallelWorldTicking && org.bxteam.divinemc.config.DivineConfig.AsyncCategory.usePerWorldTpsBar) {
 +            ServerLevel serverLevel = ((CraftWorld)player.getWorld()).getHandle();
 +
@@ -63,10 +63,10 @@ index 8769993e7ca59da309087051a3cd38fc562c15d1..2eda6de8df6f8eb90bb84d12c3a88ca3
 -        ));
 +            ));
 +        }
-+        // DivineMC end - MSPT Tracking for each world
++        // NVFolia end - MSPT Tracking for each world
 +    }
 +
-+    // DivineMC start - MSPT Tracking for each world
++    // NVFolia start - MSPT Tracking for each world
 +    private double calculateWorldMSPT(ServerLevel serverLevel) {
 +        long[] times = serverLevel.tickTimes5s.getTimes();
 +        long total = 0L;
