@@ -1,5 +1,5 @@
-name: "NVFolia-Test-Plugin"
+name: "NVFoliaBukkitPlugin"
 version: "SNAPSHOT"
-main: "io.folianv.testplugin.TestPlugin"
-api-version: "1.21.7"
+main: "io.nvfolia.testplugin.TestPlugin"
+api-version: "26.1.2"
 folia-supported: true
