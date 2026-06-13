@@ -18,7 +18,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("Enabling test plugin for Canvas");
+        getLogger().info("Enabling test plugin for NVFolia");
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getCommandMap().register("rtp", new BukkitCommand("rtp") {
             @Override
