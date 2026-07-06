@@ -15,26 +15,24 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The DivineMC project directory is not a properly cloned Git repository.
+         The NVFolia project directory is not a properly cloned Git repository.
          
          In order to build DivineMC from source you must clone
-         the DivineMC repository using Git, not download a code
+         the NVFolia repository using Git, not download a code
          zip from GitHub.
          
          Built DivineMC jars are available for download at
          https://bxteam.org/downloads/divinemc or 
-         at https://mcjars.app/DIVINEMC/versions
+         at https://mcjars.app/nvfolia/versions
          
-         See https://bxteam.org/docs/divinemc/development/contributing
-         for further information on building and modifying DivineMC.
         ===================================================
     """.trimIndent()
     error(errorText)
 }
 
-rootProject.name = "DivineMC"
+rootProject.name = "NVFolia"
 
-for (name in listOf("divinemc-api", "divinemc-server")) {
+for (name in listOf("nvfolia-api", "nvfolia-server")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)
@@ -42,8 +40,8 @@ for (name in listOf("divinemc-api", "divinemc-server")) {
 
 gradle.lifecycle.beforeProject {
     val mcVersion = providers.gradleProperty("mcVersion").get().trim()
-    val divinemcChannel = providers.gradleProperty("channel").get().trim()
-    val divinemcBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
+    val nvfoliaChannel = providers.gradleProperty("channel").get().trim()
+    val nvfoliaBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
     val versionString = if (divinemcBuildNumber == null) {
         "$mcVersion.local-SNAPSHOT"
     } else {
