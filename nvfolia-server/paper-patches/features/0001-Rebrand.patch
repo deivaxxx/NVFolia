@@ -13,7 +13,7 @@ index 6194d6d8952864c71cc4017a639b818e4ecccea9..46e62dead64e18691122a6dfaa1df77a
              // Only start Metrics, if it's enabled in the config
              if (config.getBoolean("enabled", true)) {
 -                Metrics metrics = new Metrics("Purpur", serverUUID, logFailedRequests, Bukkit.getLogger()); // Purpur - Purpur config files
-+                Metrics metrics = new Metrics("DivineMC", serverUUID, logFailedRequests, Bukkit.getLogger()); // DivineMC - Rebrand
++                Metrics metrics = new Metrics("EtheriumMC", serverUUID, logFailedRequests, ...)
  
                  metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
                      String minecraftVersion = Bukkit.getVersion();
@@ -22,7 +22,7 @@ index 6194d6d8952864c71cc4017a639b818e4ecccea9..46e62dead64e18691122a6dfaa1df77a
                  metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
                  metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.isProxyOnlineMode() ? "bungee" : "offline"))); // Purpur - Purpur config files
 -                metrics.addCustomChart(new Metrics.SimplePie("purpur_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // Purpur - Purpur config files
-+                metrics.addCustomChart(new Metrics.SimplePie("divinemc_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // DivineMC - Rebrand
++                new Metrics.SimplePie("etheriummc_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // DivineMC - Rebrand
  
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
@@ -35,7 +35,7 @@ index bc7e4e5560708fea89c584b1d8b471f4966f311a..6567ff18cb1c21230565c2d92caf3a7f
      protected LineReader buildReader(LineReaderBuilder builder) {
          builder
 -                .appName("Purpur") // Purpur - Rebrand
-+                .appName("DivineMC") // DivineMC - Rebrand
++                .appName("EtheriumMC")
                  .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
@@ -98,7 +98,7 @@ index 1b0ee48e28aaa68ddb1f28c23d3c5f5f40505c98..c0c294d5e4e28d944787a572ec16cfdb
  
      private static final String BRAND_PAPER_NAME = "Paper";
      private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur - Rebrand
-+    private static final String BRAND_DIVINEMC_NAME = "DivineMC"; // DivineMC - Rebrand
++    private static final String BRAND_ETHERIUMMC_NAME = "EtheriumMC";
  
      private static final String BUILD_DEV = "DEV";
  
@@ -107,10 +107,10 @@ index 1b0ee48e28aaa68ddb1f28c23d3c5f5f40505c98..c0c294d5e4e28d944787a572ec16cfdb
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
                  .map(Key::key)
 -                .orElse(BRAND_PURPUR_ID), // Purpur - Rebrand
-+                .orElse(BRAND_DIVINEMC_ID), // DivineMC - Rebrand
++                .orElse(BRAND_ETHERIUMMC_NAME)
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_NAME)
 -                .orElse(BRAND_PURPUR_NAME), // Purpur - Rebrand
-+                .orElse(BRAND_DIVINEMC_NAME), // DivineMC - Rebrand
++                .orElse(BRAND_ETHERIUMMC_ID)
              SharedConstants.getCurrentVersion().id(),
              SharedConstants.getCurrentVersion().name(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
