@@ -1,4 +1,4 @@
-![Brand](https://github.com/deivaxxx/NVFolia/blob/main/nvfolia.png)
+![Brand](https://github.com/deivaxxx/NVFolia/blob/main/EtheriumMC.png)
 
 
 # EtheriumMC 🌴 1.21.5 - 26.2 Spigot Plugins Support
