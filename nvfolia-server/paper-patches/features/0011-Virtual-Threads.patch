@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+Date: Mon, 24 Feb 2025 19:36:33 +0300
+Subject: [PATCH] Virtual Threads
+
+
+diff --git a/src/main/java/io/papermc/paper/util/MCUtil.java b/src/main/java/io/papermc/paper/util/MCUtil.java
+index f659aba1587d70b8d4011e66f40f480ff4deeeb4..c4f1937d9b4dd4b5eb24f212409ff60d5830cb87 100644
+--- a/src/main/java/io/papermc/paper/util/MCUtil.java
++++ b/src/main/java/io/papermc/paper/util/MCUtil.java
+@@ -69,7 +69,7 @@ public final class MCUtil {
+             run.run();
+         }
+     };
+-    public static final ExecutorService ASYNC_EXECUTOR = Executors.newFixedThreadPool(2, new ThreadFactoryBuilder()
++    public static final ExecutorService ASYNC_EXECUTOR = org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualAsyncExecutor ? Executors.newVirtualThreadPerTaskExecutor() : Executors.newFixedThreadPool(2, new ThreadFactoryBuilder() // DivineMC - Virtual Threads
+         .setNameFormat("Paper Async Task Handler Thread - %1$d")
+         .setUncaughtExceptionHandler(new net.minecraft.DefaultUncaughtExceptionHandlerWithName(MinecraftServer.LOGGER))
+         .build()
+diff --git a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
+index 27562fd66ae9d091837cab74057706c8a6b6521c..69fad4fcfa7f3692dedeb8e76402b6de39d82560 100644
+--- a/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
++++ b/src/main/java/org/bukkit/craftbukkit/scheduler/CraftAsyncScheduler.java
+@@ -31,14 +31,18 @@ import java.util.ArrayList;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.concurrent.Executor;
++import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Executors;
+ import java.util.concurrent.SynchronousQueue;
+ import java.util.concurrent.ThreadPoolExecutor;
+ import java.util.concurrent.TimeUnit;
+ 
+ public class CraftAsyncScheduler extends CraftScheduler {
+-
+-    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(
++    // DivineMC start - Virtual Threads
++    private final ExecutorService executor = org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualBukkitScheduler
++        ? Executors.newVirtualThreadPerTaskExecutor()
++        : new ThreadPoolExecutor(
++    // DivineMC end - Virtual Threads
+             4, Integer.MAX_VALUE, 30L, TimeUnit.SECONDS, new SynchronousQueue<>(),
+             new ThreadFactoryBuilder().setNameFormat("Craft Scheduler Thread - %1$d").build());
+     private final Executor management = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+@@ -47,8 +51,12 @@ public class CraftAsyncScheduler extends CraftScheduler {
+ 
+     CraftAsyncScheduler() {
+         super(true);
+-        executor.allowCoreThreadTimeOut(true);
+-        executor.prestartAllCoreThreads();
++        // DivineMC start - Virtual Threads
++        if (!org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualThreadsEnabled && !org.bxteam.divinemc.config.DivineConfig.PerformanceCategory.virtualBukkitScheduler) {
++            ((ThreadPoolExecutor) executor).allowCoreThreadTimeOut(true);
++            ((ThreadPoolExecutor) executor).prestartAllCoreThreads();
++        }
++        // DivineMC end - Virtual Threads
+     }
+ 
+     @Override
