@@ -22,6 +22,6 @@
     <RunAsTest>false</RunAsTest>
     <GradleProfilingDisabled>false</GradleProfilingDisabled>
     <GradleCoverageDisabled>false</GradleCoverageDisabled>
-    <method v="2" />
+    <method v="1" />
   </configuration>
 </component>
