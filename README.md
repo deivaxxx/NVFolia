@@ -39,7 +39,7 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 
 ```DivineMC``` - Used to spawn mobs asynchronously and speed up single-threaded minecraft connection
 
-```Folia``` - The main core used for NVFolia branding
+```Fish``` - Using patches to improve PWT performance
 
 
 ### What does the EtheriumMC multithreaded core do, each dimension has its own thread and chunk too. Now if a player is located and loads 16 chunks, then his TPS will be the same as in these 16 chunks. Other players who load their chunks will have their own TPS
