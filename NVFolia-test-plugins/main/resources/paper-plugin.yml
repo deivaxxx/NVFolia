@@ -1,5 +1,0 @@
-name: "NVFoliaBukkitPlugin"
-version: "SNAPSHOT"
-main: "io.nvfolia.testplugin.TestPlugin"
-api-version: "26.1.2"
-folia-supported: true
