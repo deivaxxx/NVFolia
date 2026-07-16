@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Sat, 27 Jun 2026 01:26:33 -0500
+Subject: [PATCH] Fish Health Metrics
+
+
+diff --git a/ca/spottedleaf/moonrise/patches/chunk_system/scheduling/task/ChunkFullTask.java b/ca/spottedleaf/moonrise/patches/chunk_system/scheduling/task/ChunkFullTask.java
+index 96ccb8f657d755b2e58a8dd0cda00ca0df4886b2..567ae3e3c99f50467831a8653109c92448b30755 100644
+--- a/ca/spottedleaf/moonrise/patches/chunk_system/scheduling/task/ChunkFullTask.java
++++ b/ca/spottedleaf/moonrise/patches/chunk_system/scheduling/task/ChunkFullTask.java
+@@ -43,6 +43,24 @@ public final class ChunkFullTask extends ChunkProgressionTask implements Runnabl
+         return ChunkStatus.FULL;
+     }
+ 
++    // Fish start - Health Metrics
++    public static final io.papermc.paper.util.IntervalledCounter FISH$CHUNK_LOADS = new io.papermc.paper.util.IntervalledCounter(java.util.concurrent.TimeUnit.SECONDS.toNanos(15L));
++    public static final io.papermc.paper.util.IntervalledCounter FISH$CHUNK_GENERATES = new io.papermc.paper.util.IntervalledCounter(java.util.concurrent.TimeUnit.SECONDS.toNanos(15L));
++    public static double fish$genRate(final long time) {
++        synchronized (FISH$CHUNK_GENERATES) {
++            FISH$CHUNK_GENERATES.updateCurrentTime(time);
++            return FISH$CHUNK_GENERATES.getRate();
++        }
++    }
++
++    public static double fish$loadRate(final long time) {
++        synchronized (FISH$CHUNK_LOADS) {
++            FISH$CHUNK_LOADS.updateCurrentTime(time);
++            return FISH$CHUNK_LOADS.getRate();
++        }
++    }
++    // Fish end - Health Metrics
++
+     @Override
+     public void run() {
+         final PlatformHooks platformHooks = PlatformHooks.get();
+@@ -59,6 +77,18 @@ public final class ChunkFullTask extends ChunkProgressionTask implements Runnabl
+                 ((ChunkSystemPoiManager)this.world.getPoiManager()).moonrise$checkConsistency(this.fromChunk);
+             }
+ 
++            // Fish start - Health Metrics
++            final long time = System.nanoTime();
++            if (this.fromChunk instanceof ImposterProtoChunk wrappedFull) {
++                synchronized (FISH$CHUNK_LOADS) {
++                    FISH$CHUNK_LOADS.updateAndAdd(1L, time);
++                }
++            } else {
++                synchronized (FISH$CHUNK_GENERATES) {
++                    FISH$CHUNK_GENERATES.updateAndAdd(1L, time);
++                }
++            }
++            // Fish end - Health Metrics
+             if (this.fromChunk instanceof ImposterProtoChunk wrappedFull) {
+                 chunk = wrappedFull.getWrapped();
+             } else {
