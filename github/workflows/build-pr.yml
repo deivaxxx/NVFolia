@@ -2,7 +2,7 @@ name: Build Pull Request
 
 on:
   pull_request:
-    branches: [ "ver/26.1.2" ]
+    branches: [ "EtheriumMC/26.2" ]
 
 jobs:
   build:
