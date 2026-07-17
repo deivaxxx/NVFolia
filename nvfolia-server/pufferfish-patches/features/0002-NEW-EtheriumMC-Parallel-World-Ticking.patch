@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: deivaxxx
+Date: Mon, 17 Jul 2026 13:36:37 -0500
+Subject: [PATCH] EtheriumMC Parallel World Ticking
+
+
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java b/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java
+index ba06858a264053ade28ed2397a562fdced28b798..5eadae3f9e7ffebcbfb17c76c2fea8f108fcf9bc 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java
++++ b/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java
+@@ -105,6 +105,12 @@ public class ProfilingManager {
+             GlobalMemory memory = hardware.getMemory();
+             VirtualMemory virtualMemory = memory.getVirtualMemory();
+ 
++            // Fish start - Flare world performance collectors
++            java.util.List<co.technove.flare.live.Collector> collectors = com.google.common.collect.Lists.newArrayList(new TPSCollector(), new WorldCountCollector(ProfilingManager::submitToMainThread), new GCEventCollector(), new StatCollector(), new ThreadCollector());
++            if (me.biquaternions.fish.FishConfig.ASYNC.WORLD_TICKING._ENABLED) {
++                collectors.add(me.biquaternions.fish.flare.collectors.WorldTpsCollector.create());
++            }
++            // Fish start - Flare world performance collectors
+             FlareBuilder builder = new FlareBuilder()
+                 .withProfileType(profileType)
+                 .withMemoryProfiling(true)
+@@ -116,7 +122,7 @@ public class ProfilingManager {
+                 .withVersion("Minecraft Version", Bukkit.getMinecraftVersion())
+ 
+                 .withGraphCategories(CustomCategories.ENTITIES_AND_CHUNKS, CustomCategories.MC_PERF)
+-                .withCollectors(new TPSCollector(), new WorldCountCollector(ProfilingManager::submitToMainThread), new GCEventCollector(), new StatCollector(), new ThreadCollector())
++                .withCollectors(collectors.toArray(co.technove.flare.live.Collector[]::new)) // Fish - Flare world performance collectors
+                 .withClassIdentifier(PluginLookup::getPluginForClass)
+ 
+                 .withHardware(new FlareBuilder.HardwareBuilder()

@@ -1,0 +1,69 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: deivaxxx
+Date: Sat, 9 Aug 2025 17:35:49 -0500
+Subject: [PATCH] Etherium Rebrand
+
+
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java
+index 33c46afb69f7dff6538406c562968c7458c3f031..5b345c0130d1d391deefb0c84adf751b8092c193 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java
++++ b/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java
+@@ -31,11 +31,11 @@ import static net.minecraft.server.MinecraftServer.COMPONENT_LOGGER;
+ 
+ public class PufferfishVersionFetcher extends PaperVersionFetcher {
+ 
+-    private static final Logger LOGGER = LoggerFactory.getLogger(PufferfishVersionFetcher.class.getSimpleName());
++    private static final Logger LOGGER = LoggerFactory.getLogger("FishVersionFetcher"); // Fish - Rebrand
+     private static final long CACHE_TIME = TimeUnit.MINUTES.toMillis(30);
+ 
+-    private static final String REPOSITORY = "SerlithNetwork/Puffernot";
+-    private static final String DOWNLOAD_PAGE = "https://github.com/SerlithNetwork/Puffernot/releases";
++    private static final String REPOSITORY = "Biquaternions/Fish"; // Fish - Rebrand
++    private static final String DOWNLOAD_PAGE = "https://github.com/Biquaternions/Fish/releases"; // Fish - Rebrand
+ 
+     private static final int DISTANCE_ERROR = -1;
+     private static final int DISTANCE_UNKNOWN = -2;
+@@ -92,7 +92,7 @@ public class PufferfishVersionFetcher extends PaperVersionFetcher {
+ 
+     private static int fetchDistanceFromSiteApi(final int actionsBuild) {
+         try {
+-            final URL buildsUrl = URI.create("https://version.serlith.net/projects/pufferfish/" + PufferfishVersionFetcher.BUILD_INFO.minecraftVersionId() + "/latest").toURL();
++            final URL buildsUrl = URI.create("https://version.serlith.net/projects/fish/" + PufferfishVersionFetcher.BUILD_INFO.minecraftVersionId() + "/latest").toURL(); // Fish - Rebrand
+             final HttpURLConnection connection = (HttpURLConnection) buildsUrl.openConnection();
+             connection.setConnectTimeout(5000);
+             connection.setReadTimeout(5000);
+@@ -103,7 +103,7 @@ public class PufferfishVersionFetcher extends PaperVersionFetcher {
+                 final int latest = json.getAsInt();
+                 return Math.max(latest - actionsBuild, 0);
+             } catch (final JsonSyntaxException ex) {
+-                LOGGER.error("Error parsing json from Pufferfish's downloads API", ex);
++                LOGGER.error("Error parsing json from Fish's downloads API", ex); // Fish - Rebrand
+                 return DISTANCE_ERROR;
+             } catch (final SocketTimeoutException ex) {
+                 return 0;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java b/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java
+index 5ad53edffc891bf1fc35977e7c09cfaaa72af4d1..6d521d524b1e256f3c1905a08793546dfb230da9 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java
++++ b/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java
+@@ -25,7 +25,8 @@ public class ServerConfigurations {
+         "spigot.yml",
+         "config/paper-global.yml",
+         "config/paper-world-defaults.yml",
+-        "pufferfish.yml"
++        "pufferfish.yml",
++        "fish.yml"
+     };
+ 
+     private static final String[] hiddenConfigEntries = new String[]{
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java b/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java
+index 3acffffcb5c63ca0a63691c52808369e85494eed..522550f1de17d47924aa5ada71bc169186f51156 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java
++++ b/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java
+@@ -33,6 +33,7 @@ public class PluginLookup {
+             || name.startsWith("ca.spottedleaf.") || name.startsWith("com.sun.") || name.startsWith("org.jline.") || name.startsWith("org.bukkit.")
+             || name.startsWith("org.spigotmc.") || name.startsWith("com.destroystokyo.paper") || name.startsWith("co.aikar.")
+             || name.startsWith("io.netty.") || name.startsWith("com.velocitypowered.")
++            || name.startsWith("me.biquaternions.fish.") // Fish - Ignore self packages
+         ) {
+             return Optional.empty();
+         }
