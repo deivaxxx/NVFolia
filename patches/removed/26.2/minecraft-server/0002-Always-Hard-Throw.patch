@@ -1,0 +1,129 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Biquaternions <biquaternions@serlith.net>
+Date: Thu, 21 Aug 2025 17:55:49 -0500
+Subject: [PATCH] Fish Always Hard Throw
+
+Personally, I'll always vouch for software stability.
+Since is never a good idea to disable the hard throw, I completely removed it.
+To compensate this, Fish includes a configuration that... "forces" (they can just skip it) the
+  user to read the Parallel World Ticking rules before using the feature.
+In Fish, you either play by the rules or don't use this feature.
+You can read the reason why disabling it will never be a solution:
+  https://github.com/SparklyPower/SparklyPaper/blob/ver/1.21.8/docs/PARALLEL_WORLD_TICKING.md#i-live-on-the-edge-and-i-dont-want-random-not-on-main-thread-throws
+The user is now forced to read an entry in the repository before using the feature to find a yml key, otherwise the server will
+  refuse to enable it. While this is very easily bypassable by just reading the repository, is an additional step
+  that gives the average user the time to think about truly enabling this feature.
+  https://github.com/Biquaternions/Fish/blob/ver/1.21.8/docs/PWT_RULES.md
+
+diff --git a/src/main/java/ca/spottedleaf/moonrise/common/util/TickThread.java b/src/main/java/ca/spottedleaf/moonrise/common/util/TickThread.java
+index d393e76d75a2cb8950c633235f3cc56db744d107..2fb5fc0e82b13c92d445460a70036cd168b8fd13 100644
+--- a/src/main/java/ca/spottedleaf/moonrise/common/util/TickThread.java
++++ b/src/main/java/ca/spottedleaf/moonrise/common/util/TickThread.java
+@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
+ public class TickThread extends Thread {
+ 
+     private static final Logger LOGGER = LoggerFactory.getLogger(TickThread.class);
+-    private static final boolean FISH$HARD_THROW = !Boolean.getBoolean("fish.dontHardThrow"); // SparklyPaper - parallel world ticking
+ 
+     private static String getThreadContext() {
+         return "thread=" + Thread.currentThread().getName();
+@@ -27,7 +26,6 @@ public class TickThread extends Thread {
+     public static void ensureTickThread(final String reason) {
+         if (!isTickThread()) {
+             LOGGER.error("Thread failed main thread check: " + reason + ", context=" + getThreadContext(), new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(reason);
+         }
+     }
+@@ -37,7 +35,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                                reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", block_pos=" + pos + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -47,7 +44,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", block_pos=" + pos + ", block_radius=" + blockRadius + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -57,7 +53,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", chunk_pos=" + pos + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -67,7 +62,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", chunk_pos=" + new ChunkPos(chunkX, chunkZ) + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -77,7 +71,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", entity=" + EntityUtil.dumpEntity(entity) + " - " + TickThread.getTickThreadInformation(entity.level().getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -87,7 +80,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", aabb=" + aabb + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -97,7 +89,6 @@ public class TickThread extends Thread {
+             final String ex = "Thread failed main thread check: " +
+                 reason + ", context=" + getThreadContext() + ", world=" + WorldUtil.getWorldName(world) + ", block_pos=" + new Vec3(blockX, 0.0, blockZ) + " - " + TickThread.getTickThreadInformation(world.getServer()); // SparklyPaper - parallel world ticking
+             LOGGER.error(ex, new Throwable());
+-            if (FISH$HARD_THROW) // SparklyPaper - parallel world ticking
+             throw new IllegalStateException(ex);
+         }
+     }
+@@ -108,7 +99,7 @@ public class TickThread extends Thread {
+     public static void ensureTickThread(final net.minecraft.server.level.ServerLevel world, final String reason) {
+         if (!TickThread.isTickThreadFor(world)) {
+             LOGGER.error("Thread " + Thread.currentThread().getName() + " failed main thread check: " + reason + " @ world " + world.getWorld().getName() + " - " + TickThread.getTickThreadInformation(world.getServer()), new Throwable()); // SparklyPaper - parallel world ticking
+-            if (FISH$HARD_THROW) throw new IllegalStateException(reason);
++            throw new IllegalStateException(reason);
+         }
+     }
+ 
+@@ -118,7 +109,7 @@ public class TickThread extends Thread {
+         boolean isServerLevelTickThread = TickThread.isWorldTickThread();
+         if (!isTickThread || isServerLevelTickThread) {
+             LOGGER.error("Thread " + Thread.currentThread().getName() + " failed main thread ONLY tick thread check: " + reason, new Throwable());
+-            if (FISH$HARD_THROW) throw new IllegalStateException(reason);
++            throw new IllegalStateException(reason);
+         }
+     }
+ 
+@@ -129,7 +120,7 @@ public class TickThread extends Thread {
+         boolean isValid = isAsyncThread || isValidTickThread;
+         if (!isValid) {
+             LOGGER.error("Thread " + Thread.currentThread().getName() + " failed main thread or async thread check: " + reason + " @ world " + world.getWorld().getName() + " - " + TickThread.getTickThreadInformation(world.getServer()), new Throwable());
+-            if (FISH$HARD_THROW) throw new IllegalStateException(reason);
++            throw new IllegalStateException(reason);
+         }
+     }
+ 
+@@ -150,8 +141,6 @@ public class TickThread extends Thread {
+         }
+         sb.append("; Is iterating over levels? ");
+         sb.append(minecraftServer.isIteratingOverLevels);
+-        sb.append("; Are we going to hard throw? ");
+-        sb.append(FISH$HARD_THROW);
+         return sb.toString();
+     }
+ 
