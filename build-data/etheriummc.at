@@ -7,6 +7,7 @@ private-f net.minecraft.world.level.levelgen.NoiseChunk$NoiseInterpolator noiseF
 private-f net.minecraft.world.level.levelgen.RandomState router
 private-f net.minecraft.world.level.levelgen.RandomState sampler
 public net.minecraft.core.NonNullList list
+public net.minecraft.server.level.ServerLevel chunkSource
 public net.minecraft.server.level.ServerLevel entityTickList
 public net.minecraft.server.players.PlayerList players
 public net.minecraft.util.Mth SIN
@@ -54,6 +55,7 @@ public net.minecraft.world.level.levelgen.DensityFunctions$WeirdScaledSampler
 public net.minecraft.world.level.levelgen.DensityFunctions$WeirdScaledSampler$RarityValueMapper mapper
 public net.minecraft.world.level.levelgen.DensityFunctions$YClampedGradient
 public net.minecraft.world.level.levelgen.Heightmap setHeight(III)V
+public net.minecraft.world.level.levelgen.NoiseChunk blender
 public net.minecraft.world.level.levelgen.NoiseChunk$BlendAlpha
 public net.minecraft.world.level.levelgen.NoiseChunk$BlendOffset
 public net.minecraft.world.level.levelgen.NoiseRouterData$QuantizedSpaghettiRarity
