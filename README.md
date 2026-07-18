@@ -26,8 +26,6 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 > - All new functions have been added to the DivineMC config. Selected for more convenient editing
 > - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
 
-**All the above features will appear in NVFolia-build-10**
-
 
 ### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
 
@@ -40,6 +38,8 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 ```DivineMC``` - Used to spawn mobs asynchronously and speed up single-threaded minecraft connection
 
 ```Fish``` - Using patches to improve PWT performance
+
+```LeavesMC``` - Using protocols to integrate mods into the Paper structure
 
 
 ### What does the EtheriumMC multithreaded core do, each dimension has its own thread and chunk too. Now if a player is located and loads 16 chunks, then his TPS will be the same as in these 16 chunks. Other players who load their chunks will have their own TPS
