@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <Spottedleaf@users.noreply.github.com>
+Date: Fri, 17 Jul 2026 07:26:07 -0700
+Subject: [PATCH] Do not allow out of region teleport accept
+
+This may occur when passenger desync happens.
+
+diff --git a/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 829f304d62c88f215b9d04b662ab79182f034672..c1faaf7d514c23d756aa626fa93aabd8bb503463 100644
+--- a/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -811,6 +811,19 @@ public class ServerGamePacketListenerImpl
+                 return;
+             }
+ 
++            // Folia start - do not allow out of region teleport accept
++            if (!ca.spottedleaf.moonrise.common.util.TickThread.isTickThreadFor(
++                    this.player.level(),
++                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkCoordinate(this.awaitingPositionFromClient.x),
++                    ca.spottedleaf.moonrise.common.util.CoordinateUtils.getChunkCoordinate(this.awaitingPositionFromClient.z),
++                    1)
++            ) {
++                LOGGER.warn("Disconnecting '" + this.player.getScoreboardName() + "' for out of region teleport accept");
++                this.disconnect(Component.translatable("multiplayer.disconnect.invalid_player_movement"), org.bukkit.event.player.PlayerKickEvent.Cause.INVALID_PLAYER_MOVEMENT);
++                return;
++            }
++            // Folia end - do not allow out of region teleport accept
++
+             this.player
+                 .absSnapTo(
+                     this.awaitingPositionFromClient.x,

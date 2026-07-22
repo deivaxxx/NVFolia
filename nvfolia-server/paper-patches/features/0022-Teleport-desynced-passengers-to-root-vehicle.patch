@@ -1,0 +1,125 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Spottedleaf <Spottedleaf@users.noreply.github.com>
+Date: Fri, 17 Jul 2026 07:12:47 -0700
+Subject: [PATCH] Teleport desynced passengers to root vehicle
+
+Every tick, check that passengers do not desync by more than
+1 chunk. If they do, then we simply teleport them to the
+root vehicle.
+
+diff --git a/ca/spottedleaf/leafprofiler/LProfilerRegistry.java b/ca/spottedleaf/leafprofiler/LProfilerRegistry.java
+index 20a0f56dc213509b0cef89e2d4669ec18a81a36f..a000e8a944ce1c4648e783d45dbd121a977acc43 100644
+--- a/ca/spottedleaf/leafprofiler/LProfilerRegistry.java
++++ b/ca/spottedleaf/leafprofiler/LProfilerRegistry.java
+@@ -45,4 +45,5 @@ public final class LProfilerRegistry {
+     public static final int TILE_ENTITY = GLOBAL_REGISTRY.createType(ProfileType.TIMER, "Tile Entities");
+     public static final int TILE_ENTITY_PENDING = GLOBAL_REGISTRY.createType(ProfileType.TIMER, "Tile Entity Handle Pending");
+     public static final int TILE_ENTITY_TICK = GLOBAL_REGISTRY.createType(ProfileType.TIMER, "Tile Entity Tick");
++    public static final int PASSENGER_DESYNC_CHECK = GLOBAL_REGISTRY.createType(ProfileType.TIMER, "Check Passenger Desync"); // Folia - fix passenger desync
+ }
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index c6a4d52f76e10fcc57b2c49b07fbc2ef9bb90822..6f13870a1b463049dd37cf1c65d0bdecfc35b5c4 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1726,6 +1726,16 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             }
+             foliaProfiler.addCounter(ca.spottedleaf.leafprofiler.LProfilerRegistry.ENTITY_SCHEDULERS_TICKED, tickedEntitySchedulers); // Folia - profiler
+             } finally { foliaProfiler.stopTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.ENTITY_SCHEDULER_TICK); } // Folia - profiler
++            // Folia start - fix passenger desync
++            foliaProfiler.startTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.PASSENGER_DESYNC_CHECK);
++            try {
++                for (final net.minecraft.world.entity.Entity entity : region.world.getCurrentWorldData().getLocalEntitiesCopy()) {
++                    entity.fixPassengerDesync();
++                }
++            } finally {
++                foliaProfiler.stopTimer(ca.spottedleaf.leafprofiler.LProfilerRegistry.PASSENGER_DESYNC_CHECK);
++            }
++            // Folia end - fix passenger desync
+         }
+         // Folia end - region threading
+         //this.tickCount++; // Folia - region threading
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index 2a8a7aeddffdfed31cd6e1162c0756986049fbab..a2b57f62b745dd21e215f919d335f14f5cb1706f 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -4890,6 +4890,80 @@ public abstract class Entity
+         return true;
+     }
+     // Folia end - region threading
++    // Folia start - fix passenger desync
++    public void fixPassengerDesync() {
++        if (this.isPassenger() || !this.isVehicle()) {
++            return;
++        }
++
++        List<Entity> indirectPassengers = (List<Entity>)this.getIndirectPassengers();
++        List<ChunkPos> positions = new java.util.ArrayList<>(indirectPassengers.size() + 1);
++        positions.add(this.chunkPosition);
++        for (Entity passenger : this.getIndirectPassengers()) {
++            positions.add(passenger.chunkPosition);
++        }
++        int maxDistance = Integer.MIN_VALUE;
++        for (int i = 0; i < positions.size(); ++i) {
++            for (int j = i + 1; j < positions.size(); ++j) {
++                ChunkPos from = positions.get(i);
++                ChunkPos to = positions.get(j);
++
++                int diffX = to.x() - from.x();
++                int diffZ = to.z() - from.z();
++
++                int dist = Math.max(Math.abs(diffX), Math.abs(diffZ));
++                maxDistance = Math.max(maxDistance, dist);
++            }
++        }
++
++        if (maxDistance <= 1) {
++            return;
++        }
++
++        LOGGER.warn("Vehicle " + this + " desynced from passengers by " + maxDistance + " chunks, teleporting to root vehicle");
++        for (Entity passenger : indirectPassengers) {
++            LOGGER.warn("Desynced passenger " + passenger + " has vehicle " + passenger.getVehicle());
++        }
++
++        // force connect the chunks between this entity and its passengers
++        ChunkPos srcChunk = this.chunkPosition;
++        for (Entity passenger : indirectPassengers) {
++            ChunkPos dstChunk = passenger.chunkPosition;
++
++            int srcX = Math.min(srcChunk.x(), dstChunk.x());
++            int dstX = Math.max(srcChunk.x(), dstChunk.x());
++
++            int srcZ = Math.min(srcChunk.z(), dstChunk.z());
++            int dstZ = Math.max(srcChunk.z(), dstChunk.z());
++
++            if (srcX == dstX && srcZ == dstZ) {
++                continue;
++            }
++
++            // along x
++            for (int currX = srcX; currX <= dstX; ++currX) {
++                ChunkPos pos = new ChunkPos(currX, srcZ);
++                ((ServerLevel)this.level()).getChunkSource().addTicketAtLevel(
++                    TicketType.UNKNOWN, pos, ca.spottedleaf.moonrise.patches.chunk_system.scheduling.ChunkHolderManager.MAX_TICKET_LEVEL
++                );
++            }
++
++            // along z
++            for (int currZ = srcZ; currZ <= dstZ; ++currZ) {
++                ChunkPos pos = new ChunkPos(dstX, currZ);
++                ((ServerLevel)this.level()).getChunkSource().addTicketAtLevel(
++                    TicketType.UNKNOWN, pos, ca.spottedleaf.moonrise.patches.chunk_system.scheduling.ChunkHolderManager.MAX_TICKET_LEVEL
++                );
++            }
++        }
++
++        this.teleportAsync(
++            (ServerLevel)this.level(), this.position, null, null, null,
++            org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.UNKNOWN, Entity.TELEPORT_FLAG_LOAD_CHUNK | Entity.TELEPORT_FLAG_TELEPORT_PASSENGERS,
++            null
++        );
++    }
++    // Folia end - fix passenger desync
+ 
+     public @Nullable Entity teleport(TeleportTransition transition) { // Paper - remove param final
+         // Folia start - region threading
