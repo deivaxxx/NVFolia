@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: NONPLAYT <nonplay@bxteam.org>
+From: deivaxxx <nonplay@bxteam.org>
 Date: Sat, 11 Jan 2025 22:22:01 +0300
 Subject: [PATCH] Rebrand
 
@@ -13,7 +13,7 @@ index c06d8ab454622d4488b6fb2e925fb52769929c51..6a48eea222a96a817c70c535fa580bbb
      private StackTraceElement[] uncategorizedStackTrace = new StackTraceElement[0];
      private final SystemReport systemReport = new SystemReport();
 -    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO PURPUR INSTEAD!", ""); // Purpur - Rebrand
-+    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO DIVINEMC INSTEAD!", ""); // DivineMC - Rebrand
++    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO DIVINEMC INSTEAD!", ""); // EtheriumMC - Rebrand
  
      public CrashReport(final String title, final Throwable t) {
          this.title = title;
@@ -26,7 +26,7 @@ index 439e2663a297029efc77adef9e8d99a0d8c02f41..b2a42bf642d80df6fb02e2e2e72da585
  
      private void write(final FriendlyByteBuf output) {
 -        output.writeUtf(this.brand);
-+        output.writeUtf(org.purpurmc.purpur.PurpurConfig.f3Name + "§r"); // DivineMC - Update Purpur rebrand settings
++        output.writeUtf(org.purpurmc.purpur.PurpurConfig.f3Name + "§r"); // EtheriumMC - Update Purpur rebrand settings
      }
  
      @Override
@@ -57,7 +57,7 @@ index 975ece253a047204506448453ac86631edbfd463..b608c8f3dd165f96154193cb7af82a5a
 +            LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
 +            return;
 +        }
-+        // DivineMC end - Rebrand
++        // EtheriumMC end - Rebrand
 +
          io.papermc.paper.log.LogManagerShutdownThread.hook(); // Paper - Improved watchdog support
          SharedConstants.tryDetectVersion();
