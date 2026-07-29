@@ -1,11 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+From: NONPLAYT <nonplay@bxteam.org>
 Date: Wed, 2 Jul 2025 19:14:51 +0300
 Subject: [PATCH] Delete ReloadCommand
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 13f8793b0149dc4a7622f05bfbe41942876648e2..fc875729fa56081cfcdd1bf290ad8640aa74c3d5 100644
+index 0dc256263e9a110651951ed89fee6fbb2170380b..008a2213172de3e36e0e3db941652cb6eb2a21ec 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -962,11 +962,6 @@ public final class CraftServer implements Server {
