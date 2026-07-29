@@ -1,0 +1,82 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <nonplay@bxteam.org>
+Date: Tue, 14 Oct 2025 01:42:43 +0300
+Subject: [PATCH] Pufferfish: Make EntityCollisionContext a live representation
+
+This patch is based on the following patch:
+"Make EntityCollisionContext a live representation"
+By: Paul Sauve <paul@technove.co>
+As part of: Airplane (https://github.com/TECHNOVE/Airplane)
+Licensed under: GPL-3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
+
+diff --git a/net/minecraft/world/phys/shapes/EntityCollisionContext.java b/net/minecraft/world/phys/shapes/EntityCollisionContext.java
+index 2958b47d82064eb1ef7578e8515dee3eaa55d330..eb1089a2116e50144b620152622341a3d8a721b5 100644
+--- a/net/minecraft/world/phys/shapes/EntityCollisionContext.java
++++ b/net/minecraft/world/phys/shapes/EntityCollisionContext.java
+@@ -12,11 +12,10 @@ import net.minecraft.world.level.material.FluidState;
+ import org.jspecify.annotations.Nullable;
+ 
+ public class EntityCollisionContext implements CollisionContext {
+-    private final boolean descending;
+-    private final double entityBottom;
++    // DivineMC start - Pufferfish: Make EntityCollisionContext a live representation
+     private final boolean placement;
+-    private final ItemStack heldItem;
+     private final boolean alwaysCollideWithFluid;
++    // DivineMC end - Pufferfish: Make EntityCollisionContext a live representation
+     private final @Nullable Entity entity;
+ 
+     protected EntityCollisionContext(
+@@ -27,29 +26,25 @@ public class EntityCollisionContext implements CollisionContext {
+         final boolean alwaysCollideWithFluid,
+         final @Nullable Entity entity
+     ) {
+-        this.descending = descending;
++        // DivineMC start - Pufferfish: Make EntityCollisionContext a live representation
+         this.placement = placement;
+-        this.entityBottom = entityBottom;
+-        this.heldItem = heldItem;
+         this.alwaysCollideWithFluid = alwaysCollideWithFluid;
++        // DivineMC end - Pufferfish: Make EntityCollisionContext a live representation
+         this.entity = entity;
+     }
+ 
+     @Deprecated
+     protected EntityCollisionContext(final Entity entity, final boolean alwaysCollideWithFluid, final boolean placement) {
+-        this(
+-            entity.isDescending(),
+-            placement,
+-            entity.getY(),
+-            entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY,
+-            alwaysCollideWithFluid,
+-            entity
+-        );
++        // DivineMC start - Pufferfish: Make EntityCollisionContext a live representation
++        this.placement = placement;
++        this.alwaysCollideWithFluid = alwaysCollideWithFluid;
++        this.entity = entity;
++        // DivineMC end - Pufferfish: Make EntityCollisionContext a live representation
+     }
+ 
+     @Override
+     public boolean isHoldingItem(final Item item) {
+-        return this.heldItem.is(item);
++        return this.entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem().is(item) : ItemStack.EMPTY.is(item); // DivineMC - Pufferfish: Make EntityCollisionContext a live representation
+     }
+ 
+     @Override
+@@ -69,12 +64,12 @@ public class EntityCollisionContext implements CollisionContext {
+ 
+     @Override
+     public boolean isDescending() {
+-        return this.descending;
++        return this.entity != null && this.entity.isDescending(); // DivineMC - Pufferfish: Make EntityCollisionContext a live representation
+     }
+ 
+     @Override
+     public boolean isAbove(final VoxelShape shape, final BlockPos pos, final boolean defaultValue) {
+-        return this.entityBottom > pos.getY() + shape.max(Direction.Axis.Y) - 1.0E-5F;
++        return (this.entity == null ? -Double.MAX_VALUE : entity.getY()) > (double) pos.getY() + shape.max(Direction.Axis.Y) - (double) 1.0E-5F; // DivineMC - Pufferfish: Make EntityCollisionContext a live representation
+     }
+ 
+     public @Nullable Entity getEntity() {
