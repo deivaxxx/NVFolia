@@ -5,12 +5,12 @@
  
      public static <E> NonNullList<E> create() {
 -        return new NonNullList<>(Lists.newArrayList(), null);
-+        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(), null); // Canvas - optimized collection
++        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(), null); // DivineMC - Optimize collections
      }
  
      public static <E> NonNullList<E> createWithCapacity(final int capacity) {
 -        return new NonNullList<>(Lists.newArrayListWithCapacity(capacity), null);
-+        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(capacity), null); // Canvas - optimized collection
++        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(capacity), null); // DivineMC - Optimize collections
      }
  
      public static <E> NonNullList<E> withSize(final int size, final E defaultValue) {
@@ -18,13 +18,13 @@
          Object[] objects = new Object[size];
          Arrays.fill(objects, defaultValue);
 -        return new NonNullList<>(Arrays.asList((E[])objects), defaultValue);
-+        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>((E[])objects), defaultValue); // Canvas - optimized collection
++        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>((E[])objects), defaultValue); // DivineMC - Optimize collections
      }
  
      @SafeVarargs
      public static <E> NonNullList<E> of(final E defaultValue, final E... values) {
 -        return new NonNullList<>(Arrays.asList(values), defaultValue);
-+        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(values), defaultValue); // Canvas - optimized collection
++        return new NonNullList<>(new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(values), defaultValue); // DivineMC - Optimize collections
      }
  
      protected NonNullList(final List<E> list, final @Nullable E defaultValue) {
