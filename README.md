@@ -8,7 +8,7 @@ A fork of Folia that supports the Bukkit API and 80% of Spigot/Paper plugins
 Please! The EtheriumMC is in effective development, and when using it, save a backup of the world
 
 Most plugins have a multithreaded Folia compatibility setting, I'm building an API that runs entirely on Paper/Spigot but adds all of Folia's functionality
-# The core is in Beta Testing 26.2!
+# The core is in Stable 26.2!
 
 # What is included in the core component?
 > - All Folia components and chunk division
@@ -25,6 +25,7 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 > - Adjustment and disabling of all Folia functions without restarting
 > - All new functions have been added to the DivineMC config. Selected for more convenient editing
 > - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
+
 
 
 ### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
