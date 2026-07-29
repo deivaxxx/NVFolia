@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: NONPLAYT <76615486+NONPLAYT@users.noreply.github.com>
+From: NONPLAYT <nonplay@bxteam.org>
 Date: Mon, 3 Mar 2025 01:15:10 +0300
 Subject: [PATCH] Extend Location API
 
 
 diff --git a/src/main/java/org/bukkit/Location.java b/src/main/java/org/bukkit/Location.java
-index 1e75bc2f5772e18c082feb7f3c6419c85519ef40..7e6795f5ed0ef46440ff36b03ec7602da6096b8a 100644
+index 1a89e738b7923553d1080ecd497ad60d34dd0f37..ae3dd002a7130cc589332941fdb003b4f7502b6c 100644
 --- a/src/main/java/org/bukkit/Location.java
 +++ b/src/main/java/org/bukkit/Location.java
-@@ -1282,4 +1282,170 @@ public class Location implements Cloneable, ConfigurationSerializable, io.paperm
+@@ -1291,4 +1291,170 @@ public class Location implements Cloneable, ConfigurationSerializable, io.paperm
      public @NotNull Location toLocation(@NotNull World world) {
          return new Location(world, this.x(), this.y(), this.z(), this.getYaw(), this.getPitch());
      }

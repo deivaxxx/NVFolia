@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: deivaxxx
+From: NONPLAYT <nonplay@bxteam.org>
 Date: Fri, 21 Feb 2025 22:58:46 +0300
 Subject: [PATCH] Rebrand
 
@@ -13,12 +13,12 @@ index fb1fe2651e53a9bf46b3632c638e13eea9dcda93..81e92d1053efd15c079e318a4ae08794
      Key BRAND_PURPUR_ID = Key.key("purpurmc", "purpur");
      // Purpur end
 +
-+    // EtheriumMC start - Rebrand
++    // DivineMC start - Rebrand
 +    /**
-+     * The brand id for EtheriumMC.
++     * The brand id for DivineMC.
 +     */
-+    Key BRAND_EtheriumMC_ID = Key.key("deivaxxx", "etheriummc");
-+    // EtheriumMC end
++    Key BRAND_DIVINEMC_ID = Key.key("bxteam", "divinemc");
++    // DivineMC end
 +
      /**
       * Gets the {@code ServerBuildInfo}.
