@@ -1,0 +1,180 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: NONPLAYT <nonplay@bxteam.org>
+Date: Sat, 11 Jan 2025 22:22:01 +0300
+Subject: [PATCH] Rebrand
+
+
+diff --git a/net/minecraft/CrashReport.java b/net/minecraft/CrashReport.java
+index c06d8ab454622d4488b6fb2e925fb52769929c51..6a48eea222a96a817c70c535fa580bbb8e01f357 100644
+--- a/net/minecraft/CrashReport.java
++++ b/net/minecraft/CrashReport.java
+@@ -30,7 +30,7 @@ public class CrashReport {
+     private boolean trackingStackTrace = true;
+     private StackTraceElement[] uncategorizedStackTrace = new StackTraceElement[0];
+     private final SystemReport systemReport = new SystemReport();
+-    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO PURPUR INSTEAD!", ""); // Purpur - Rebrand
++    private List<String> extraInfo = List.of("", "DO NOT REPORT THIS TO PAPER! REPORT TO DIVINEMC INSTEAD!", ""); // DivineMC - Rebrand
+ 
+     public CrashReport(final String title, final Throwable t) {
+         this.title = title;
+diff --git a/net/minecraft/network/protocol/common/custom/BrandPayload.java b/net/minecraft/network/protocol/common/custom/BrandPayload.java
+index 439e2663a297029efc77adef9e8d99a0d8c02f41..b2a42bf642d80df6fb02e2e2e72da585663bbdf7 100644
+--- a/net/minecraft/network/protocol/common/custom/BrandPayload.java
++++ b/net/minecraft/network/protocol/common/custom/BrandPayload.java
+@@ -12,7 +12,7 @@ public record BrandPayload(String brand) implements CustomPacketPayload {
+     }
+ 
+     private void write(final FriendlyByteBuf output) {
+-        output.writeUtf(this.brand);
++        output.writeUtf(org.purpurmc.purpur.PurpurConfig.f3Name + "§r"); // DivineMC - Update Purpur rebrand settings
+     }
+ 
+     @Override
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index 975ece253a047204506448453ac86631edbfd463..b608c8f3dd165f96154193cb7af82a5ab84f8fbd 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -67,36 +67,31 @@ public class Main {
+ 
+     @SuppressForbidden(reason = "System.out needed before bootstrap")
+     public static void main(final OptionSet options) { // CraftBukkit - replaces main(String[] args)
++        // DivineMC start - Rebrand
++        io.papermc.paper.ServerBuildInfo info = io.papermc.paper.ServerBuildInfo.buildInfo();
++        switch (io.papermc.paper.ServerBuildInfoImpl.CHANNEL) {
++            case "ALPHA" -> LOGGER.warn("Running an alpha version of {}, please proceed with caution.", info.brandName());
++            case "EXPERIMENTAL" -> LOGGER.warn("Running an experimental version of {}, please proceed with caution.", info.brandName());
++        }
++
++        Path path2 = Paths.get("eula.txt");
++        Eula eula = new Eula(path2);
++        boolean eulaAgreed = Boolean.getBoolean("com.mojang.eula.agree");
++        if (eulaAgreed) {
++            LOGGER.error("You have used the Spigot command line EULA agreement flag.");
++            LOGGER.error("By using this setting you are indicating your agreement to Mojang's EULA (https://aka.ms/MinecraftEULA).");
++            LOGGER.error("If you do not agree to the above EULA please stop your server and remove this flag immediately.");
++        }
++        if (!eula.hasAgreedToEULA() && !eulaAgreed) {
++            LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
++            return;
++        }
++        // DivineMC end - Rebrand
++
+         io.papermc.paper.log.LogManagerShutdownThread.hook(); // Paper - Improved watchdog support
+         SharedConstants.tryDetectVersion();
+-        /* CraftBukkit start - Replace everything
+-        OptionParser parser = new OptionParser();
+-        OptionSpec<Void> nogui = parser.accepts("nogui");
+-        OptionSpec<Void> initSettings = parser.accepts("initSettings", "Initializes 'server.properties' and 'eula.txt', then quits");
+-        OptionSpec<Void> demo = parser.accepts("demo");
+-        OptionSpec<Void> bonusChest = parser.accepts("bonusChest");
+-        OptionSpec<Void> forceUpgrade = parser.accepts("forceUpgrade");
+-        OptionSpec<Void> eraseCache = parser.accepts("eraseCache");
+-        OptionSpec<Void> recreateRegionFiles = parser.accepts("recreateRegionFiles");
+-        OptionSpec<Void> safeMode = parser.accepts("safeMode", "Loads level with vanilla datapack only");
+-        OptionSpec<Void> help = parser.accepts("help").forHelp();
+-        OptionSpec<String> universe = parser.accepts("universe").withRequiredArg().defaultsTo(".");
+-        OptionSpec<String> worldName = parser.accepts("world").withRequiredArg();
+-        OptionSpec<Integer> port = parser.accepts("port").withRequiredArg().ofType(Integer.class).defaultsTo(-1);
+-        OptionSpec<String> serverId = parser.accepts("serverId").withRequiredArg();
+-        OptionSpec<Void> jfrProfilingOption = parser.accepts("jfrProfile");
+-        OptionSpec<Path> pidFile = parser.accepts("pidFile").withRequiredArg().withValuesConvertedBy(new PathConverter());
+-        OptionSpec<String> nonOptions = parser.nonOptions();
+ 
+         try {
+-            OptionSet options = parser.parse(args);
+-            if (options.has(help)) {
+-                parser.printHelpOn(System.err);
+-                return;
+-            }
+-            */ // CraftBukkit end
+-        try {
+-
+             Path pidFilePath = (Path) options.valueOf("pidFile"); // CraftBukkit
+             if (pidFilePath != null) {
+                 writePidFile(pidFilePath);
+@@ -137,8 +132,6 @@ public class Main {
+             }
+             // Paper end
+             RegionFileVersion.configure(settings.getProperties().regionFileComression);
+-            Path eulaFile = Paths.get("eula.txt");
+-            Eula eula = new Eula(eulaFile);
+             // Paper start - load config files early for access below if needed
+             org.bukkit.configuration.file.YamlConfiguration bukkitConfiguration = io.papermc.paper.configuration.PaperConfigurations.loadLegacyConfigFile((File) options.valueOf("bukkit-settings"));
+             org.bukkit.configuration.file.YamlConfiguration spigotConfiguration = io.papermc.paper.configuration.PaperConfigurations.loadLegacyConfigFile((File) options.valueOf("spigot-settings"));
+@@ -157,19 +150,7 @@ public class Main {
+                 commandsConfiguration.setDefaults(org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(new java.io.InputStreamReader(Main.class.getClassLoader().getResourceAsStream("configurations/commands.yml"), java.nio.charset.StandardCharsets.UTF_8)));
+                 commandsConfiguration.save(commandFile);
+                 // CraftBukkit end
+-                LOGGER.info("Initialized '{}' and '{}'", settingsFile.toAbsolutePath(), eulaFile.toAbsolutePath());
+-                return;
+-            }
+-
+-            // Paper start - eula system property
+-            boolean eulaAgreed = Boolean.getBoolean("com.mojang.eula.agree");
+-            if (eulaAgreed) {
+-                LOGGER.warn("You have used the Paper command line EULA agreement flag.");
+-                LOGGER.warn("By using this setting you are indicating your agreement to Mojang's EULA (https://aka.ms/MinecraftEULA).");
+-                LOGGER.warn("If you do not agree to the above EULA please stop your server and remove this flag immediately.");
+-            } else if (!eula.hasAgreedToEULA()) {
+-                // Paper end - eula system property
+-                LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
++                LOGGER.info("Initialized '{}' and '{}'", settingsFile.toAbsolutePath(), path2.toAbsolutePath()); // DivineMC - Rebrand
+                 return;
+             }
+ 
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index d9d3443f37c8d0ace131c16be8ee8b8c0965145c..3db9ba7fff996a07c6d6a2845a464a1f0344c456 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1287,6 +1287,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     protected void runServer() {
+         try {
++            org.bxteam.divinemc.spark.ThreadDumperRegistry.REGISTRY.add(Thread.currentThread().getName()); // DivineMC - Rebrand
+             if (!this.initServer()) {
+                 throw new IllegalStateException("Failed to initialize server");
+             }
+diff --git a/net/minecraft/server/gui/MinecraftServerGui.java b/net/minecraft/server/gui/MinecraftServerGui.java
+index 960454a167ef52eb867da40af1fc5b3de4ea307c..e9b38ad8b9da0d8e502f157de00c917048125860 100644
+--- a/net/minecraft/server/gui/MinecraftServerGui.java
++++ b/net/minecraft/server/gui/MinecraftServerGui.java
+@@ -53,7 +53,7 @@ public class MinecraftServerGui extends JComponent {
+         } catch (Exception var3) {
+         }
+ 
+-        final JFrame frame = new JFrame("Purpur Minecraft server"); // Purpur - Improve GUI
++        final JFrame frame = new JFrame(org.purpurmc.purpur.PurpurConfig.serverGUIName); // Purpur - Improve GUI // DivineMC - Update Purpur rebrand settings
+         final MinecraftServerGui gui = new MinecraftServerGui(server);
+         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+         frame.add(gui);
+@@ -61,7 +61,7 @@ public class MinecraftServerGui extends JComponent {
+         frame.setLocationRelativeTo(null);
+         frame.setVisible(true);
+         // Paper start - Improve ServerGUI
+-        frame.setName("Purpur Minecraft server"); // Purpur - Improve GUI
++        frame.setName(org.purpurmc.purpur.PurpurConfig.serverGUIName); // Purpur - Improve GUI // DivineMC - Update Purpur rebrand settings
+         try {
+             frame.setIconImage(javax.imageio.ImageIO.read(java.util.Objects.requireNonNull(MinecraftServerGui.class.getClassLoader().getResourceAsStream("logo.png"))));
+         } catch (java.io.IOException ignore) {
+@@ -71,7 +71,7 @@ public class MinecraftServerGui extends JComponent {
+             @Override
+             public void windowClosing(final WindowEvent event) {
+                 if (!gui.isClosing.getAndSet(true)) {
+-                    frame.setTitle("Purpur Minecraft server - shutting down!"); // Purpur - Improve GUI
++                    frame.setTitle(org.purpurmc.purpur.PurpurConfig.serverGUIName + " - shutting down!"); // Purpur - Improve GUI // DivineMC - Update Purpur rebrand settings
+                     server.halt(true);
+                     gui.runFinalizers();
+                 }
+diff --git a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+index d00c0cd57fec367acc17c15f247e22990c5bdf7c..84cdf7d5427d7a61894d70980fcfa2897dca99d2 100644
+--- a/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
++++ b/net/minecraft/world/level/chunk/storage/RegionFileStorage.java
+@@ -309,7 +309,7 @@ public class RegionFileStorage implements AutoCloseable, ca.spottedleaf.moonrise
+ 
+     // Paper start
+     private static void printOversizedLog(String msg, Path file, int x, int z) {
+-        LOGGER.error("{} ({} - {},{}) Go clean it up to remove this message. /minecraft:tp {} 128 {} - DO NOT REPORT THIS TO PURPUR - You may ask for help on Discord, but do not file an issue. These error messages can not be removed.", msg, file.toString().replaceAll(".+[\\\\/]", ""), x, z, x << 4, z << 4); // Purpur - Rebrand
++        LOGGER.error("{} ({} - {},{}) Go clean it up to remove this message. /minecraft:tp {} 128 {} - DO NOT REPORT THIS TO DIVINEMC - You may ask for help on Discord, but do not file an issue. These error messages can not be removed.", msg, file.toString().replaceAll(".+[\\\\/]", ""), x, z, x << 4, z << 4); // DivineMC - Rebrand
+     }
+ 
+     private static CompoundTag readOversizedChunk(RegionFile regionfile, ChunkPos chunkCoordinate) throws IOException {
