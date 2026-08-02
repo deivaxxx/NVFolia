@@ -26,7 +26,7 @@ Most plugins have a multithreaded Folia compatibility setting, I'm building an A
 > - All new functions have been added to the DivineMC config. Selected for more convenient editing
 > - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
 
-
+# [EtheriumMC Vanilla Minecraft Server](https://discord.gg/sakkp6g2Us)
 
 ### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
 
