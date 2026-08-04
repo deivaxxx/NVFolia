@@ -10,25 +10,21 @@ Please! The EtheriumMC is in effective development, and when using it, save a ba
 Most plugins have a multithreaded Folia compatibility setting, I'm building an API that runs entirely on Paper/Spigot but adds all of Folia's functionality
 # The core is in Stable 26.2!
 
-# What is included in the core component?
-> - All Folia components and chunk division
-> -  Full availability of Bukkit/Paper plugins
-> - Separation of TPS by dimensions
-> - Villagers automatically become dumber if there are more than 45 of them in one chunk (Useful for optimization)
-> - Separation of TPS by chunk loading distance
-> - Voting for restart
-> - Increase in server performance by 145%
-> - Items that you lost outside of loading will not despawn
-> - Fixed problems with duping rails and threads
-> - Experience farms on pig-zombie, now give experience as in previous versions
-> - You can adjust the rendering range from 8 to 24 chunks (Do not confuse with the simulation range)
-> - Adjustment and disabling of all Folia functions without restarting
-> - All new functions have been added to the DivineMC config. Selected for more convenient editing
-> - Synchronization of TPS by the connection of the portals of Nether and Overworld (So that farms on withers work adequately)
+# ⚙️ Features
+- **Full availability of Bukkit/Paper plugins**
+- **Parallel World Ticking** - Leverage multiple CPU cores for world processing 
+- **Async Operations** - Pathfinding, entity tracker, mob spawning, joining, chunk sending and portal pre-loading
+- **Regionized Chunk Ticking** - Tick chunks in parallel, this feature is provided to us by the Folia core
+- **Linear Region File Format** - Optimize your world with the old V1/V2 linear format and the new Buffered format
+- **Mod Protocols Support** - Compatible with Syncmatica, Apple Skin, and others
+- **Raytrace Entity Culling** - Stops sending entities a player provably cannot see, saving bandwidth and blinding entity-ESP cheats
+- **Parallel Sensor Phase** - Run the expensive read-only part of mob AI (entity scans, line-of-sight checks) on a thread pool
+- **Automatic lobotomization Villagers** - If residents exceed more than 45 per chunk, they will automatically begin to become dumber
+- **Increased performance and lag compensation** - If the server has less than 10 TPS, then breaking blocks, picking up items, and entering the portal are accelerated and there is no difference from 20 TPS
 
 # [EtheriumMC Vanilla Minecraft Server](https://discord.gg/sakkp6g2Us)
 
-### 🫒 I also use a simplified version of CanvasMC and the PufferFish API.
+### 🫒 I also use a simplified version of based Purpur.
 
 ```Pufferfish```-Adding DAB system and optimizing asynchronous chunk appearance
 
