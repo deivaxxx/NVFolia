@@ -15,24 +15,26 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The NVFolia project directory is not a properly cloned Git repository.
+         The EtheriumMC project directory is not a properly cloned Git repository.
          
-         In order to build DivineMC from source you must clone
-         the NVFolia repository using Git, not download a code
+         In order to build EtheriumMC from source you must clone
+         the EtheriumMC repository using Git, not download a code
          zip from GitHub.
          
-         Built DivineMC jars are available for download at
-         https://bxteam.org/downloads/divinemc or 
-         at https://mcjars.app/nvfolia/versions
+         Built EtheriumMC jars are available for download at
+         https://github.com/deivaxxx/EtheriumMC/ or 
+         at https://github.com/deivaxxx/EtheriumMC/
          
+         See https://bxteam.org/docs/divinemc/development/contributing
+         for further information on building and modifying EtheriumMC.
         ===================================================
     """.trimIndent()
     error(errorText)
 }
 
-rootProject.name = "NVFolia"
+rootProject.name = "EtheriumMC"
 
-for (name in listOf("nvfolia-api", "nvfolia-server")) {
+for (name in listOf("etheriumMC-api", "nvfolia-server", "etheriumMC-checkstyle")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)
@@ -40,8 +42,8 @@ for (name in listOf("nvfolia-api", "nvfolia-server")) {
 
 gradle.lifecycle.beforeProject {
     val mcVersion = providers.gradleProperty("mcVersion").get().trim()
-    val nvfoliaChannel = providers.gradleProperty("channel").get().trim()
-    val nvfoliaBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
+    val divinemcChannel = providers.gradleProperty("channel").get().trim()
+    val divinemcBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
     val versionString = if (divinemcBuildNumber == null) {
         "$mcVersion.local-SNAPSHOT"
     } else {
