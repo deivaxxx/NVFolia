@@ -9,14 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout DivineMC repository
-        uses: actions/checkout@v6
+      - name: Checkout EtheriumMC repository
+        uses: actions/checkout@v7
         with:
-          path: 'DivineMC'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          path: 'EtheriumMC'
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Checkout Purpur repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: 'Purpur'
           repository: "PurpurMC/Purpur"
@@ -35,7 +35,7 @@ jobs:
           currPurpurRef=$(grep "^purpurRef\s*=" gradle.properties | sed 's/^purpurRef\s*=\s*//')
           echo "currPurpurRef=$currPurpurRef" >> $GITHUB_OUTPUT
 
-      - name: Update purpurRef in DivineMC
+      - name: Update purpurRef in EtheriumMC
         run: |
           cd DivineMC
           sed -i "s/\(purpurRef\s*=\s*\).*/\1$PURPUR_REF/" gradle.properties
@@ -68,7 +68,7 @@ jobs:
 
       - name: Check for changes and write to repository
         run: |
-          cd DivineMC
+          cd EtheriumMC
           if ! git diff --quiet; then
             echo "Writing to repo....."
             git add .
